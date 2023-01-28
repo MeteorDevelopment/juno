@@ -17,6 +17,8 @@ public class GLFloatUniform extends GLUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v) {
+        if (this.v1 == v) return;
+
         this.v1 = v;
 
         program.dirty = true;
@@ -25,6 +27,8 @@ public class GLFloatUniform extends GLUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v1, float v2) {
+        if (this.v1 == v1 && this.v2 == v2) return;
+
         this.v1 = v1;
         this.v2 = v2;
 
@@ -34,6 +38,8 @@ public class GLFloatUniform extends GLUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v1, float v2, float v3) {
+        if (this.v1 == v1 && this.v2 == v2 && this.v3 == v3) return;
+
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -44,6 +50,8 @@ public class GLFloatUniform extends GLUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v1, float v2, float v3, float v4) {
+        if (this.v1 == v1 && this.v2 == v2 && this.v3 == v3 && this.v4 == v4) return;
+
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;

@@ -19,6 +19,8 @@ public class MCFloatUniform extends MCUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v) {
+        if (data.get(0) == v) return;
+
         data.put(0, v);
 
         program.dirty = true;
@@ -27,6 +29,8 @@ public class MCFloatUniform extends MCUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v1, float v2) {
+        if (data.get(0) == v1 && data.get(1) == v2) return;
+
         data.put(0, v1);
         data.put(1, v2);
 
@@ -36,6 +40,8 @@ public class MCFloatUniform extends MCUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v1, float v2, float v3) {
+        if (data.get(0) == v1 && data.get(1) == v2 && data.get(2) == v3) return;
+
         data.put(0, v1);
         data.put(1, v2);
         data.put(2, v3);
@@ -46,6 +52,8 @@ public class MCFloatUniform extends MCUniform implements FloatUniform.Single, Fl
 
     @Override
     public void set(float v1, float v2, float v3, float v4) {
+        if (data.get(0) == v1 && data.get(1) == v2 && data.get(2) == v3 && data.get(3) == v4) return;
+
         data.put(0, v1);
         data.put(1, v2);
         data.put(2, v3);

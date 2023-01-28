@@ -15,6 +15,8 @@ public class MCMatrix4Uniform extends MCUniform implements Matrix4Uniform {
 
     @Override
     public void set(Matrix4f matrix) {
+        if (this.matrix.equals(matrix)) return;
+
         this.matrix.set(matrix);
 
         program.dirty = true;

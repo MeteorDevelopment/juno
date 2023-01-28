@@ -17,6 +17,8 @@ public class GLMatrix4Uniform extends GLUniform implements Matrix4Uniform {
 
     @Override
     public void set(Matrix4f matrix) {
+        if (this.matrix.equals(matrix)) return;
+
         this.matrix.set(matrix);
 
         program.dirty = true;

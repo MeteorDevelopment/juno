@@ -11,7 +11,10 @@ public class MCTextureUniform extends MCUniform implements TextureUniform {
 
     @Override
     public void set(TextureBinding binding) {
-        slot = ((MCTextureBinding) binding).id;
+        int slot = ((MCTextureBinding) binding).id;
+        if (this.slot == slot) return;
+
+        this.slot = slot;
 
         program.dirty = true;
         dirty = true;

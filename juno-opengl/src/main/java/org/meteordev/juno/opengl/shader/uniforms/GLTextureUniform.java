@@ -13,7 +13,10 @@ public class GLTextureUniform extends GLUniform implements TextureUniform {
 
     @Override
     public void set(TextureBinding binding) {
-        slot = ((GLTextureBinding) binding).id;
+        int slot = ((GLTextureBinding) binding).id;
+        if (this.slot == slot) return;
+
+        this.slot = slot;
 
         program.dirty = true;
         dirty = true;
