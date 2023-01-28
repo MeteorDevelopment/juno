@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "juno",
+  "name": "Juno",
+  "version": "${version}",
+  "description": "Minecraft implementation of the Juno rendering API.",
+
+  "environment": "client",
+  "mixins": [
+    "juno.mixins.json"
+  ],
+
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ]
+    }
+  }
+}

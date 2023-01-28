@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "org.meteordev.juno.mc.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "GameRendererMixin",
+    "MinecraftClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
