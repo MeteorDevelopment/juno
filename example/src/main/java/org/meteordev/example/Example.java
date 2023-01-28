@@ -72,8 +72,8 @@ public class Example {
 
         Texture texture = readTexture("/meteor_logo.png");
 
-        pipeline.getProgram().setUniform("u_Projection", new Matrix4f().ortho2D(0, 1280, 0, 720));
-        pipeline.getProgram().setUniform("u_Texture", juno.bind(texture, 0));
+        pipeline.getProgram().getMatrix4Uniform("u_Projection").set(new Matrix4f().ortho2D(0, 1280, 0, 720));
+        pipeline.getProgram().getTextureUniform("u_Texture").set(juno.bind(texture, 0));
 
         MeshBuilder mb = new MeshBuilder(pipeline.getInfo().vertexFormat);
         mb.begin();

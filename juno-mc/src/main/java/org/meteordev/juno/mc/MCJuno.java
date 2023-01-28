@@ -15,6 +15,7 @@ import org.meteordev.juno.mc.buffer.MCBuffer;
 import org.meteordev.juno.mc.pipeline.MCDrawableBuffers;
 import org.meteordev.juno.mc.pipeline.PipelineCache;
 import org.meteordev.juno.mc.pipeline.StateTracker;
+import org.meteordev.juno.mc.shader.MCProgram;
 import org.meteordev.juno.mc.shader.ProgramManager;
 import org.meteordev.juno.mc.texture.MCTexture;
 import org.meteordev.juno.mc.texture.TextureManager;
@@ -80,9 +81,14 @@ public class MCJuno implements Juno {
 
         if (indices <= 0) return;
 
-        // Draw
+        // Setup state
+        ((MCProgram) boundPipeline.getProgram()).applyUniforms();
         BufferBindings.bindDrawable(buffers);
+
+        // Draw
         glDrawElements(boundPipeline.getInfo().primitiveType == PrimitiveType.TRIANGLES ? GL_TRIANGLES : GL_LINES, indices, GL_UNSIGNED_INT, 0);
+
+        // Restore state
         BufferBindings.bindDrawable(null);
     }
 }

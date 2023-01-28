@@ -90,8 +90,8 @@ public class Omg {
         Juno juno = JunoProvider.get();
         Window window = MinecraftClient.getInstance().getWindow();
 
-        pipeline.getProgram().setUniform("u_Projection", new Matrix4f().ortho2D(0, window.getFramebufferWidth(), 0, window.getFramebufferHeight()));
-        pipeline.getProgram().setUniform("u_Texture", juno.bind(texture, 0));
+        pipeline.getProgram().getMatrix4Uniform("u_Projection").set(new Matrix4f().ortho2D(0, window.getFramebufferWidth(), 0, window.getFramebufferHeight()));
+        pipeline.getProgram().getTextureUniform("u_Texture").set(juno.bind(texture, 0));
 
         juno.bind(pipeline);
         mb.draw();

@@ -5,7 +5,6 @@ import org.meteordev.juno.api.pipeline.state.CullMode;
 import org.meteordev.juno.api.pipeline.state.DepthFunc;
 import org.meteordev.juno.api.pipeline.state.WriteMask;
 import org.meteordev.juno.api.pipeline.vertexformat.VertexFormat;
-import org.meteordev.juno.api.shader.Program;
 import org.meteordev.juno.api.shader.ShaderInfo;
 
 import java.util.Arrays;
@@ -57,8 +56,8 @@ public class PipelineInfo {
     }
 
     public void validate() {
-        assert vertexFormat != null : "PipelineInfo.vertexFormat cannot be null";
         assert primitiveType != null : "PipelineInfo.primitiveType cannot be null";
+        assert vertexFormat != null : "PipelineInfo.vertexFormat cannot be null";
         assert shaderInfos != null : "PipelineInfo.program cannot be null";
 
         assert cullMode != null : "PipelineInfo.cullMode cannot be null";
@@ -80,14 +79,28 @@ public class PipelineInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         PipelineInfo that = (PipelineInfo) o;
-        return Objects.equals(vertexFormat, that.vertexFormat) && primitiveType == that.primitiveType && Arrays.equals(shaderInfos, that.shaderInfos) && cullMode == that.cullMode && Objects.equals(blendFunc, that.blendFunc) && depthFunc == that.depthFunc && writeMask == that.writeMask;
+
+        if (primitiveType != that.primitiveType) return false;
+        if (!vertexFormat.equals(that.vertexFormat)) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(shaderInfos, that.shaderInfos)) return false;
+        if (cullMode != that.cullMode) return false;
+        if (!Objects.equals(blendFunc, that.blendFunc)) return false;
+        if (depthFunc != that.depthFunc) return false;
+        return writeMask == that.writeMask;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(vertexFormat, primitiveType, cullMode, blendFunc, depthFunc, writeMask);
+        int result = primitiveType.hashCode();
+        result = 31 * result + vertexFormat.hashCode();
         result = 31 * result + Arrays.hashCode(shaderInfos);
+        result = 31 * result + cullMode.hashCode();
+        result = 31 * result + (blendFunc != null ? blendFunc.hashCode() : 0);
+        result = 31 * result + (depthFunc != null ? depthFunc.hashCode() : 0);
+        result = 31 * result + writeMask.hashCode();
         return result;
     }
 }

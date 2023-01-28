@@ -17,6 +17,7 @@ import org.meteordev.juno.opengl.buffer.GLBuffer;
 import org.meteordev.juno.opengl.pipeline.GLDrawableBuffers;
 import org.meteordev.juno.opengl.pipeline.PipelineCache;
 import org.meteordev.juno.opengl.pipeline.StateTracker;
+import org.meteordev.juno.opengl.shader.GLProgram;
 import org.meteordev.juno.opengl.shader.ProgramManager;
 import org.meteordev.juno.opengl.texture.GLTexture;
 import org.meteordev.juno.opengl.texture.TextureManager;
@@ -94,9 +95,14 @@ public class GLJuno implements Juno {
             lastBoundPipeline = boundPipeline;
         }
 
-        // Draw
+        // Setup state
+        ((GLProgram) boundPipeline.getProgram()).applyUniforms();
         BufferBindings.bindDrawable((GLDrawableBuffers) buffers);
+
+        // Draw
         glDrawElements(boundPipeline.getInfo().primitiveType == PrimitiveType.TRIANGLES ? GL_TRIANGLES : GL_LINES, indices, GL_UNSIGNED_INT, 0);
+
+        // Restore state
         BufferBindings.bindDrawable(null);
     }
 }

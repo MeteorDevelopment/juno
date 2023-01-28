@@ -1,30 +1,19 @@
 package org.meteordev.juno.api.shader;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2fc;
-import org.joml.Vector3fc;
-import org.joml.Vector4fc;
-import org.meteordev.juno.api.texture.TextureBinding;
+import org.meteordev.juno.api.shader.uniforms.FloatUniform;
+import org.meteordev.juno.api.shader.uniforms.Matrix4Uniform;
+import org.meteordev.juno.api.shader.uniforms.TextureUniform;
 
 public interface Program {
-    void setUniform(String name, float x);
+    FloatUniform.Single getFloat1Uniform(String name);
 
-    void setUniform(String name, float x, float y);
-    default void setUniform(String name, Vector2fc vector) {
-        setUniform(name, vector.x(), vector.y());
-    }
+    FloatUniform.Double getFloat2Uniform(String name);
 
-    void setUniform(String name, float x, float y, float z);
-    default void setUniform(String name, Vector3fc vector) {
-        setUniform(name, vector.x(), vector.y(), vector.z());
-    }
+    FloatUniform.Triple getFloat3Uniform(String name);
 
-    void setUniform(String name, float x, float y, float z, float w);
-    default void setUniform(String name, Vector4fc vector) {
-        setUniform(name, vector.x(), vector.y(), vector.z(), vector.w());
-    }
+    FloatUniform.Quadruple getFloat4Uniform(String name);
 
-    void setUniform(String name, Matrix4f matrix);
+    Matrix4Uniform getMatrix4Uniform(String name);
 
-    void setUniform(String name, TextureBinding binding);
+    TextureUniform getTextureUniform(String name);
 }
