@@ -1,0 +1,8 @@
+accessWidener v2 named
+
+accessible class com/mojang/blaze3d/platform/GlStateManager$BlendFuncState
+accessible class com/mojang/blaze3d/platform/GlStateManager$DepthTestState
+accessible class com/mojang/blaze3d/platform/GlStateManager$CullFaceState
+accessible class com/mojang/blaze3d/platform/GlStateManager$ColorMask
+
+accessible class com/mojang/blaze3d/platform/GlStateManager$CapabilityTracker

@@ -6,14 +6,15 @@ import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
+import org.meteordev.juno.opengl.GLResource;
 
-public class GLImage implements Image {
+public class GLImage implements GLResource, Image {
     private final int width;
     private final int height;
     private final ImageFormat format;
     private final String name;
 
-    public final int handle;
+    private final int handle;
 
     private boolean valid;
 
@@ -27,6 +28,11 @@ public class GLImage implements Image {
         GL.setName(GLObjectType.IMAGE, handle, name);
 
         valid = true;
+    }
+
+    @Override
+    public int getHandle() {
+        return handle;
     }
 
     @Override

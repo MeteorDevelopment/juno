@@ -6,8 +6,6 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.meteordev.juno.api.Device;
-import org.meteordev.juno.api.buffer.Buffer;
-import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.*;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
@@ -21,7 +19,8 @@ import org.meteordev.juno.api.sampler.Filter;
 import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
 import org.meteordev.juno.opengl.GLDevice;
-import org.meteordev.juno.utils.validation.ValidationLayer;
+import org.meteordev.juno.utils.MeshBuilder;
+import org.meteordev.juno.utils.validation.ValidationDevice;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -64,7 +63,7 @@ public class Example {
 
     public static void main(String[] args) {
         Window window = new Window("Juno Example", 1280, 720);
-        Device device = ValidationLayer.wrap(GLDevice.create());
+        Device device = ValidationDevice.wrap(GLDevice.create());
 
         GL43C.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
             String msg = MemoryUtil.memASCII(message, length);
@@ -72,24 +71,6 @@ public class Example {
         }, 0);
 
         GL43C.glEnable(GL43C.GL_DEBUG_OUTPUT);
-
-        ByteBuffer indices = MemoryUtil.memAlloc(6 * 4);
-        indices.putInt(0).putInt(1).putInt(2);
-        indices.putInt(2).putInt(3).putInt(0);
-
-        ByteBuffer vertices = MemoryUtil.memAlloc(4 * 4 * 4);
-        vertices.putFloat(10).putFloat(10).putFloat(0).putFloat(0);
-        vertices.putFloat(10).putFloat( 10 + 400).putFloat(0).putFloat(1);
-        vertices.putFloat( 10 + 400).putFloat(10 + 400).putFloat(1).putFloat(1);
-        vertices.putFloat( 10 + 400).putFloat(10).putFloat(1).putFloat(0);
-
-        Buffer ibo = device.createBuffer(BufferType.INDEX, indices.capacity(), "Vertices");
-        Buffer vbo = device.createBuffer(BufferType.VERTEX, vertices.capacity(), "Indices");
-
-        CommandList uploads = device.createCommandList();
-        uploads.uploadToBuffer(indices.rewind(), ibo);
-        uploads.uploadToBuffer(vertices.rewind(), vbo);
-        uploads.submit();
 
         Shader vertex = device.createShader(ShaderType.VERTEX, VERTEX_SHADER);
         Shader fragment = device.createShader(ShaderType.FRAGMENT, FRAGMENT_SHADER);
@@ -101,6 +82,16 @@ public class Example {
                 vertex,
                 fragment
         );
+
+        MeshBuilder mesh = new MeshBuilder(pipeline.getState());
+        mesh.begin();
+        mesh.quad(
+                mesh.float2(10, 10).float2(0, 0).next(),
+                mesh.float2(10, 10 + 400).float2(0, 1).next(),
+                mesh.float2(10 + 400, 10 + 400).float2(1, 1).next(),
+                mesh.float2(10 + 400, 10).float2(1, 0).next()
+        );
+        mesh.end();
 
         ByteBuffer uniforms = MemoryUtil.memAlloc(4 * 4 * 4);
         new Matrix4f().ortho2D(0, 1280, 0, 720).get(uniforms).rewind();
@@ -122,7 +113,7 @@ public class Example {
             pass.bindPipeline(pipeline);
             pass.setUniforms(uniforms, 0);
             pass.bindImage(image, sampler, 0);
-            pass.draw(ibo, vbo, 6);
+            mesh.draw(pass);
 
             pass.end();
 

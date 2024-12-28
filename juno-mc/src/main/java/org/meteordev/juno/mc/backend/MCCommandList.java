@@ -1,28 +1,28 @@
-package org.meteordev.juno.utils.validation;
+package org.meteordev.juno.mc.backend;
 
+import net.minecraft.client.render.BufferRenderer;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.Attachment;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
+import org.meteordev.juno.opengl.GLState;
 
 import java.nio.ByteBuffer;
 
-public class ValidationCommandList implements CommandList {
-    private final ValidationDevice layer;
+public class MCCommandList implements CommandList {
+    private final MCDevice device;
     private final CommandList commands;
 
-    ValidationRenderPass pass;
-
-    ValidationCommandList(ValidationDevice layer, CommandList commands) {
-        this.layer = layer;
+    MCCommandList(MCDevice device, CommandList commands) {
+        this.device = device;
         this.commands = commands;
     }
 
     @Override
     public Device getDevice() {
-        return layer;
+        return device;
     }
 
     @Override
@@ -37,18 +37,18 @@ public class ValidationCommandList implements CommandList {
 
     @Override
     public RenderPass beginRenderPass(Attachment color, Attachment depth) {
-        if (pass != null)
-            throw new RuntimeException();
-
-        pass = new ValidationRenderPass(this, commands.beginRenderPass(color, depth));
-        return pass;
+        return commands.beginRenderPass(color, depth);
     }
 
     @Override
     public void submit() {
-        if (pass != null)
-            throw new RuntimeException();
+        GLState mcState = device.getMcState();
+        device.getState().setTo(mcState);
+
+        BufferRenderer.reset();
 
         commands.submit();
+
+        device.getState().syncWith(mcState);
     }
 }

@@ -9,9 +9,11 @@
   "entrypoints": {
     "client": ["org.meteordev.juno.mc.Omg"]
   },
+
   "mixins": [
     "juno.mixins.json"
   ],
+  "accessWidener": "juno.accesswidener",
 
   "custom": {
     "modmenu": {

@@ -8,14 +8,15 @@ import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
+import org.meteordev.juno.opengl.GLResource;
 
 import java.util.Map;
 
-public class GLPipeline implements Pipeline {
+public class GLPipeline implements GLResource, Pipeline {
     private final PipelineState state;
     private final String name;
 
-    public final int handle;
+    private final int handle;
 
     private boolean valid;
 
@@ -27,7 +28,7 @@ public class GLPipeline implements Pipeline {
         GL.setName(GLObjectType.PROGRAM, handle, name);
 
         for (Shader shader : shaders) {
-            GL33C.glAttachShader(handle, ((GLShader) shader).handle);
+            GL33C.glAttachShader(handle, ((GLResource) shader).getHandle());
         }
 
         GL33C.glLinkProgram(handle);
@@ -45,6 +46,11 @@ public class GLPipeline implements Pipeline {
         }
 
         valid = true;
+    }
+
+    @Override
+    public int getHandle() {
+        return handle;
     }
 
     @Override

@@ -2,6 +2,8 @@ package org.meteordev.juno.opengl.image;
 
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.commands.Attachment;
+import org.meteordev.juno.api.image.Image;
+import org.meteordev.juno.opengl.GLResource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ public class FramebufferManager {
     private final Map<Key, Integer> framebuffers = new HashMap<>();
 
     public int get(Attachment color, Attachment depth) {
-        Key key = new Key((GLImage) color.image(), depth != null ? (GLImage) depth.image() : null);
+        Key key = new Key(color.image(), depth != null ? depth.image() : null);
         Integer framebuffer = framebuffers.get(key);
 
         if (framebuffer == null) {
@@ -22,7 +24,7 @@ public class FramebufferManager {
         return framebuffer;
     }
 
-    public void put(GLImage color, GLImage depth, int framebuffer) {
+    public void put(Image color, Image depth, int framebuffer) {
         Key key = new Key(color, depth);
         framebuffers.put(key, framebuffer);
     }
@@ -31,15 +33,15 @@ public class FramebufferManager {
         int handle = GL33C.glGenFramebuffers();
         GL33C.glBindFramebuffer(GL33C.GL_FRAMEBUFFER, handle);
 
-        GL33C.glFramebufferTexture2D(GL33C.GL_FRAMEBUFFER, GL33C.GL_COLOR_ATTACHMENT0, GL33C.GL_TEXTURE_2D, ((GLImage) color.image()).handle, 0);
+        GL33C.glFramebufferTexture2D(GL33C.GL_FRAMEBUFFER, GL33C.GL_COLOR_ATTACHMENT0, GL33C.GL_TEXTURE_2D, ((GLResource) color.image()).getHandle(), 0);
 
         if (depth != null) {
-            GL33C.glFramebufferTexture2D(GL33C.GL_FRAMEBUFFER, GL33C.GL_DEPTH_ATTACHMENT, GL33C.GL_TEXTURE_2D, ((GLImage) depth.image()).handle, 0);
+            GL33C.glFramebufferTexture2D(GL33C.GL_FRAMEBUFFER, GL33C.GL_DEPTH_ATTACHMENT, GL33C.GL_TEXTURE_2D, ((GLResource) depth.image()).getHandle(), 0);
         }
 
         GL33C.glBindFramebuffer(GL33C.GL_FRAMEBUFFER, 0);
         return handle;
     }
 
-    private record Key(GLImage color, GLImage depth) {}
+    private record Key(Image color, Image depth) {}
 }

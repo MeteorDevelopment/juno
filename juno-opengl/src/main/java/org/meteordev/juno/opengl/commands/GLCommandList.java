@@ -9,8 +9,7 @@ import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLDevice;
-import org.meteordev.juno.opengl.buffer.GLBuffer;
-import org.meteordev.juno.opengl.image.GLImage;
+import org.meteordev.juno.opengl.GLResource;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -29,16 +28,21 @@ public class GLCommandList implements CommandList {
     // API
 
     @Override
+    public GLDevice getDevice() {
+        return device;
+    }
+
+    @Override
     public void uploadToBuffer(ByteBuffer src, Buffer dst) {
         // TODO: Upload buffer
-        GL33C.glBindBuffer(GL33C.GL_COPY_WRITE_BUFFER, ((GLBuffer) dst).handle);
+        GL33C.glBindBuffer(GL33C.GL_COPY_WRITE_BUFFER, ((GLResource) dst).getHandle());
         GL33C.glBufferData(GL33C.GL_COPY_WRITE_BUFFER, src, GL33C.GL_DYNAMIC_DRAW);
     }
 
     @Override
     public void uploadToImage(ByteBuffer src, Image dst) {
         // TODO: Upload buffer
-        GL33C.glBindTexture(GL33C.GL_TEXTURE_2D, ((GLImage) dst).handle);
+        GL33C.glBindTexture(GL33C.GL_TEXTURE_2D, ((GLResource) dst).getHandle());
 
         GL33C.glTexImage2D(
                 GL33C.GL_TEXTURE_2D,
@@ -94,10 +98,6 @@ public class GLCommandList implements CommandList {
     }
 
     // Other
-
-    public GLDevice getDevice() {
-        return device;
-    }
 
     void add(Runnable command) {
         commands.add(command);

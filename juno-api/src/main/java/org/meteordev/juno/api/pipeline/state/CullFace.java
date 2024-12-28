@@ -1,7 +1,6 @@
 package org.meteordev.juno.api.pipeline.state;
 
-public enum CullMode {
-    DISABLE,
+public enum CullFace {
     FRONT,
     BACK
 }

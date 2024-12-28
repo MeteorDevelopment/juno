@@ -14,15 +14,15 @@ import org.meteordev.juno.api.sampler.Filter;
 import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
 
-public class ValidationLayer implements Device {
+public class ValidationDevice implements Device {
     private final Device device;
 
-    private ValidationLayer(Device device) {
+    private ValidationDevice(Device device) {
         this.device = device;
     }
 
     public static Device wrap(Device device) {
-        return new ValidationLayer(device);
+        return new ValidationDevice(device);
     }
 
     @Override
@@ -67,6 +67,6 @@ public class ValidationLayer implements Device {
 
     @Override
     public CommandList createCommandList() {
-        return new ValidationCommandList(device.createCommandList());
+        return new ValidationCommandList(this, device.createCommandList());
     }
 }

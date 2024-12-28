@@ -6,13 +6,14 @@ import org.meteordev.juno.api.sampler.Filter;
 import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
 import org.meteordev.juno.opengl.GL;
+import org.meteordev.juno.opengl.GLResource;
 
-public class GLSampler implements Sampler {
+public class GLSampler implements GLResource, Sampler {
     private final Filter min;
     private final Filter mag;
     private final Wrap wrap;
 
-    public final int handle;
+    private final int handle;
 
     private boolean valid;
 
@@ -29,6 +30,11 @@ public class GLSampler implements Sampler {
         GL33C.glSamplerParameteri(handle, GL33C.GL_TEXTURE_WRAP_R, GL.convert(wrap));
 
         valid = true;
+    }
+
+    @Override
+    public int getHandle() {
+        return handle;
     }
 
     @Override

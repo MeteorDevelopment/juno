@@ -7,19 +7,20 @@ import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
+import org.meteordev.juno.opengl.GLResource;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GLShader implements Shader {
+public class GLShader implements GLResource, Shader {
     private static final Pattern UNIFORM_BUFFER_PATTERN = Pattern.compile("layout\\s*\\(std140\\)\\s*uniform\\s+(\\w+)");
 
     private final ShaderType type;
     private final String name;
 
-    public final int handle;
+    private final int handle;
     public final Map<String, Integer> uniformBlockBindings;
 
     private boolean valid;
@@ -54,6 +55,11 @@ public class GLShader implements Shader {
         }
 
         valid = true;
+    }
+
+    @Override
+    public int getHandle() {
+        return handle;
     }
 
     @Override

@@ -25,19 +25,23 @@ import org.meteordev.juno.opengl.sampler.GLSampler;
 
 public class GLDevice implements Device {
     private final GLLimits limits;
+    private final GLState state;
 
     private final VaoManager vaoManager;
-    private final FramebufferManager framebufferManager ;
+    private final FramebufferManager framebufferManager;
 
     private final GrowableByteBuffer uniforms;
     private final int uniformBuffer;
 
-    private final GLImage backBufferColor;
-    private final GLImage backBufferDepth;
+    private final Image backBufferColor;
+    private final Image backBufferDepth;
 
-    private GLDevice() {
+    protected GLDevice() {
         limits = new GLLimits(GL33C.glGetInteger(GL33C.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT));
+        state = new GLState();
+
         GL.objectLabelAvailable = org.lwjgl.opengl.GL.getCapabilities().glObjectLabel != 0;
+        state.load();
 
         vaoManager = new VaoManager();
         framebufferManager = new FramebufferManager();
@@ -47,11 +51,11 @@ public class GLDevice implements Device {
         GL33C.glBindBuffer(GL33C.GL_UNIFORM_BUFFER, uniformBuffer);
         GL.setName(GLObjectType.BUFFER, uniformBuffer, "Uniforms");
 
-        backBufferColor = new GLImage(0, 0, ImageFormat.RGB, "Back buffer - Color", 0);
-        backBufferDepth = new GLImage(0, 0, ImageFormat.R, "Back buffer - Depth", 0);
+        backBufferColor = createBackBufferColor();
+        backBufferDepth = createBackBufferDepth();
 
-        framebufferManager.put(backBufferColor, null, 0);
-        framebufferManager.put(backBufferColor, backBufferDepth, 0);
+        framebufferManager.put(backBufferColor, null, getBackBufferFramebuffer());
+        framebufferManager.put(backBufferColor, backBufferDepth, getBackBufferFramebuffer());
     }
 
     public static Device create() {
@@ -60,6 +64,10 @@ public class GLDevice implements Device {
 
     public GLLimits getLimits() {
         return limits;
+    }
+
+    public GLState getState() {
+        return state;
     }
 
     public VaoManager getVaoManager() {
@@ -76,6 +84,18 @@ public class GLDevice implements Device {
 
     public int getUniformBuffer() {
         return uniformBuffer;
+    }
+
+    protected Image createBackBufferColor() {
+        return new GLImage(0, 0, ImageFormat.RGB, "Back buffer - Color", 0);
+    }
+
+    protected Image createBackBufferDepth() {
+        return new GLImage(0, 0, ImageFormat.R, "Back buffer - Depth", 0);
+    }
+
+    protected int getBackBufferFramebuffer() {
+        return 0;
     }
 
     // API

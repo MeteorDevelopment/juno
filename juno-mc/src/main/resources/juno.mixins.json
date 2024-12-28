@@ -3,6 +3,8 @@
   "package": "org.meteordev.juno.mc.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "CapabilityTrackerAccessor",
+    "GameRendererMixin",
     "MinecraftClientMixin"
   ],
   "injectors": {

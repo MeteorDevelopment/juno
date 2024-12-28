@@ -5,6 +5,7 @@ import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.pipeline.Pipeline;
 import org.meteordev.juno.api.pipeline.vertexformat.VertexAttribute;
 import org.meteordev.juno.opengl.GL;
+import org.meteordev.juno.opengl.GLResource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class VaoManager {
         int handle = GL33C.glGenVertexArrays();
         GL33C.glBindVertexArray(handle);
 
-        GL33C.glBindBuffer(GL33C.GL_ELEMENT_ARRAY_BUFFER, ((GLBuffer) index).handle);
-        GL33C.glBindBuffer(GL33C.GL_ARRAY_BUFFER, ((GLBuffer) vertex).handle);
+        GL33C.glBindBuffer(GL33C.GL_ELEMENT_ARRAY_BUFFER, ((GLResource) index).getHandle());
+        GL33C.glBindBuffer(GL33C.GL_ARRAY_BUFFER, ((GLResource) vertex).getHandle());
 
         int stride = pipeline.getState().vertexFormat.getStride();
         VertexAttribute[] attributes = pipeline.getState().vertexFormat.attributes();

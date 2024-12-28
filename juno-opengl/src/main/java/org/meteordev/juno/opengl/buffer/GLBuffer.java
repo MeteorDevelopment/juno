@@ -6,13 +6,14 @@ import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
+import org.meteordev.juno.opengl.GLResource;
 
-public class GLBuffer implements Buffer {
+public class GLBuffer implements GLResource, Buffer {
     private final BufferType type;
     private final long size;
     private final String name;
 
-    public final int handle;
+    private final int handle;
 
     private boolean valid;
 
@@ -26,6 +27,11 @@ public class GLBuffer implements Buffer {
         GL.setName(GLObjectType.BUFFER, handle, name);
 
         valid = true;
+    }
+
+    @Override
+    public int getHandle() {
+        return handle;
     }
 
     @Override

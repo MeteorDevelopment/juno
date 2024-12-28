@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL43C;
 import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.image.ImageFormat;
 import org.meteordev.juno.api.pipeline.state.BlendFunc;
-import org.meteordev.juno.api.pipeline.state.CullMode;
+import org.meteordev.juno.api.pipeline.state.CullFace;
 import org.meteordev.juno.api.pipeline.state.DepthFunc;
 import org.meteordev.juno.api.pipeline.state.PrimitiveType;
 import org.meteordev.juno.api.pipeline.vertexformat.VertexType;
@@ -82,9 +82,8 @@ public class GL {
         };
     }
 
-    public static int convert(CullMode mode) {
+    public static int convert(CullFace mode) {
         return switch (mode) {
-            case DISABLE -> 0;
             case FRONT -> GL33C.GL_FRONT;
             case BACK -> GL33C.GL_BACK;
         };
