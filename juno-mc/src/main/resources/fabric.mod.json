@@ -6,6 +6,9 @@
   "description": "Minecraft implementation of the Juno rendering API.",
 
   "environment": "client",
+  "entrypoints": {
+    "client": ["org.meteordev.juno.mc.Omg"]
+  },
   "mixins": [
     "juno.mixins.json"
   ],

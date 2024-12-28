@@ -1,26 +1,31 @@
 package org.meteordev.juno.opengl.buffer;
 
+import org.lwjgl.opengl.GL33C;
+import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
-import org.meteordev.juno.opengl.GLJuno;
-
-import static org.lwjgl.opengl.GL15C.*;
-import static org.lwjgl.opengl.GL45C.glCreateBuffers;
-import static org.lwjgl.opengl.GL45C.nglNamedBufferData;
+import org.meteordev.juno.opengl.GL;
+import org.meteordev.juno.opengl.GLObjectType;
 
 public class GLBuffer implements Buffer {
-    public final BufferType type;
-    public final int id;
+    private final BufferType type;
+    private final long size;
+    private final String name;
+
+    public final int handle;
 
     private boolean valid;
 
-    public GLBuffer(BufferType type) {
+    public GLBuffer(BufferType type, long size, String name) {
         this.type = type;
+        this.size = size;
+        this.name = name;
 
-        if (GLJuno.DSA) this.id = glCreateBuffers();
-        else this.id = glGenBuffers();
+        handle = GL33C.glGenBuffers();
+        GL33C.glBindBuffer(GL.convert(type), handle);
+        GL.setName(GLObjectType.BUFFER, handle, name);
 
-        this.valid = true;
+        valid = true;
     }
 
     @Override
@@ -29,11 +34,8 @@ public class GLBuffer implements Buffer {
     }
 
     @Override
-    public void write(long data, long size) {
-        if (size <= 0) return;
-
-        if (GLJuno.DSA) nglNamedBufferData(id, size, data, GL_DYNAMIC_DRAW);
-        else nglBufferData(BufferBindings.bind(this), size, data, GL_DYNAMIC_DRAW);
+    public long getSize() {
+        return size;
     }
 
     @Override
@@ -43,9 +45,15 @@ public class GLBuffer implements Buffer {
 
     @Override
     public void destroy() {
-        if (!valid) throw new IllegalStateException("Tried to destroy an invalid buffer");
+        if (!valid)
+            throw new InvalidResourceException(this);
 
-        glDeleteBuffers(id);
+        GL33C.glDeleteBuffers(handle);
         valid = false;
+    }
+
+    @Override
+    public String toString() {
+        return "Buffer '" + name + "'";
     }
 }

@@ -8,4 +8,6 @@ public class StandardFormats {
 
     public static final VertexFormat POSITION_3D = new VertexFormat(StandardAttributes.POSITION_3D);
     public static final VertexFormat POSITION_3D_COLOR = new VertexFormat(StandardAttributes.POSITION_3D, StandardAttributes.COLOR);
+
+    private StandardFormats() {}
 }

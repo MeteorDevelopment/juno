@@ -29,13 +29,14 @@ val lwjglNatives = Pair(
 
 dependencies {
     implementation(project(":juno-api"))
+    implementation(project(":juno-utils"))
     implementation(project(":juno-opengl"))
 
     implementation("org.joml:joml:${project.property("joml_version")}")
 
     // LWJGL
 
-    implementation(platform("org.lwjgl:lwjgl-bom:3.3.1"))
+    implementation(platform("org.lwjgl:lwjgl-bom:${project.property("lwjgl_version")}"))
 
     implementation("org.lwjgl:lwjgl")
     implementation("org.lwjgl:lwjgl-glfw")
@@ -61,7 +62,16 @@ tasks.withType<Jar> {
 tasks.withType<JavaCompile> {
     // Idk why Gradle didn't figure this out automatically but oh well
     dependsOn(":juno-api:build")
+    dependsOn(":juno-utils:build")
     dependsOn(":juno-opengl:build")
+}
+
+tasks {
+    sourcesJar {
+        dependsOn(":juno-api:jar")
+        dependsOn(":juno-utils:jar")
+        dependsOn(":juno-opengl:jar")
+    }
 }
 
 tasks.withType<PublishToMavenRepository> {
