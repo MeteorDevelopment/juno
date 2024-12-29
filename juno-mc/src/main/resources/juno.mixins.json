@@ -5,7 +5,8 @@
   "client": [
     "CapabilityTrackerAccessor",
     "GameRendererMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

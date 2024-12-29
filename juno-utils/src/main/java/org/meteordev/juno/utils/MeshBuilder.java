@@ -187,5 +187,8 @@ public class MeshBuilder {
 
         commands.uploadToBuffer(vertices.limit(vertices.position()).rewind(), vbo);
         commands.uploadToBuffer(indices.limit(indices.position()).rewind(), ibo);
+
+        vertices.limit(vertices.capacity());
+        indices.limit(indices.capacity());
     }
 }
