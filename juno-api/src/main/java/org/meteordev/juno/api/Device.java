@@ -14,6 +14,8 @@ import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
 
 public interface Device {
+    BackendInfo getBackendInfo();
+
     // Buffers
 
     Buffer createBuffer(BufferType type, long size, String name);

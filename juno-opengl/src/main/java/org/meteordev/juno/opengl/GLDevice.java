@@ -1,6 +1,7 @@
 package org.meteordev.juno.opengl;
 
 import org.lwjgl.opengl.GL33C;
+import org.meteordev.juno.api.BackendInfo;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
@@ -36,6 +37,8 @@ public class GLDevice implements Device {
     private final Image backBufferColor;
     private final Image backBufferDepth;
 
+    private final BackendInfo info;
+
     protected GLDevice() {
         limits = new GLLimits(GL33C.glGetInteger(GL33C.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT));
         state = new GLState();
@@ -56,6 +59,14 @@ public class GLDevice implements Device {
 
         framebufferManager.put(backBufferColor, null, getBackBufferFramebuffer());
         framebufferManager.put(backBufferColor, backBufferDepth, getBackBufferFramebuffer());
+
+        // Info
+        StringBuilder detail = new StringBuilder();
+
+        if (GL.objectLabelAvailable)
+            detail.append("Object labels");
+
+        info = new BackendInfo("OpenGL", detail.toString());
     }
 
     public static Device create() {
@@ -99,6 +110,11 @@ public class GLDevice implements Device {
     }
 
     // API
+
+    @Override
+    public BackendInfo getBackendInfo() {
+        return info;
+    }
 
     @Override
     public Buffer createBuffer(BufferType type, long size, String name) {

@@ -2,6 +2,7 @@ package org.meteordev.juno.mc.backend;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
+import org.meteordev.juno.api.BackendInfo;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.mc.mixin.CapabilityTrackerAccessor;
@@ -18,6 +19,8 @@ public class MCDevice extends GLDevice {
 
     private final GLState mcState;
 
+    private final BackendInfo info;
+
     public MCDevice() {
         this.mcBlendState = getMcState(GlStateManager.BlendFuncState.class);
         this.mcDepthState = getMcState(GlStateManager.DepthTestState.class);
@@ -25,6 +28,9 @@ public class MCDevice extends GLDevice {
         this.mcColorMask = getMcState(GlStateManager.ColorMask.class);
 
         this.mcState = new GLState();
+
+        BackendInfo glInfo = super.getBackendInfo();
+        info = new BackendInfo("Minecraft (" + glInfo.name() + ")", glInfo.detail());
     }
 
     GLState getMcState() {
@@ -85,5 +91,13 @@ public class MCDevice extends GLDevice {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // API
+
+
+    @Override
+    public BackendInfo getBackendInfo() {
+        return info;
     }
 }

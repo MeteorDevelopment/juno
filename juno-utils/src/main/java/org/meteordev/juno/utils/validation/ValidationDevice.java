@@ -1,5 +1,6 @@
 package org.meteordev.juno.utils.validation;
 
+import org.meteordev.juno.api.BackendInfo;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
@@ -17,12 +18,22 @@ import org.meteordev.juno.api.sampler.Wrap;
 public class ValidationDevice implements Device {
     private final Device device;
 
+    private final BackendInfo info;
+
     private ValidationDevice(Device device) {
         this.device = device;
+
+        BackendInfo prevInfo = device.getBackendInfo();
+        info = new BackendInfo(prevInfo.name(), "Validation, " + prevInfo.detail());
     }
 
     public static Device wrap(Device device) {
         return new ValidationDevice(device);
+    }
+
+    @Override
+    public BackendInfo getBackendInfo() {
+        return info;
     }
 
     @Override
