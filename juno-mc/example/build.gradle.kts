@@ -2,7 +2,7 @@ plugins {
     id("fabric-loom") version "1.8-SNAPSHOT"
 }
 
-group = "${project.property("group_base")}.mc"
+group = "${project.property("group_base")}.mc.example"
 
 dependencies {
     // Fabric
@@ -10,18 +10,9 @@ dependencies {
     mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
-    modApi(fabricApi.module("fabric-api-base", project.property("fapi_version").toString()))
-    include(fabricApi.module("fabric-api-base", project.property("fapi_version").toString()))
-
     // Juno
-    api(project(":juno-api"))
-    include(project(":juno-api"))
-
-    api(project(":juno-utils"))
-    include(project(":juno-utils"))
-
-    api(project(":juno-opengl"))
-    include(project(":juno-opengl"))
+    implementation(project(":juno-mc", "namedElements"))
+    include(project(":juno-mc"))
 }
 
 tasks.withType<ProcessResources> {
@@ -33,10 +24,4 @@ tasks.withType<ProcessResources> {
 tasks.withType<JavaCompile> {
     sourceCompatibility = JavaVersion.VERSION_21.toString()
     targetCompatibility = JavaVersion.VERSION_21.toString()
-}
-
-tasks {
-    loom {
-        accessWidenerPath = file("src/main/resources/juno.accesswidener")
-    }
 }

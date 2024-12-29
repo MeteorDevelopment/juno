@@ -10,4 +10,4 @@ pluginManagement {
     }
 }
 
-include("juno-api", "juno-utils", "juno-opengl", "juno-mc", "example")
+include("juno-api", "juno-utils", "juno-opengl", "juno-mc", "juno-mc:example", "example")

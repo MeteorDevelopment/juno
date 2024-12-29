@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "juno-example",
+  "name": "Juno Example",
+  "version": "${version}",
+  "description": "Example usage of the Juno rendering API in Minecraft.",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [ "org.meteordev.juno.mc.example.Example" ]
+  },
+
+  "depends": {
+    "juno": "*"
+  }
+}
