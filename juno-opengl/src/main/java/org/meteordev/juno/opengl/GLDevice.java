@@ -148,8 +148,8 @@ public class GLDevice implements Device {
     }
 
     @Override
-    public Pipeline createPipeline(PipelineState state, String name, Shader... shaders) {
-        return new GLPipeline(state, name, shaders);
+    public Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
+        return new GLPipeline(state, vertexShader, fragmentShader, name);
     }
 
     @Override

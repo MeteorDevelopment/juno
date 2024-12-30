@@ -20,16 +20,15 @@ public class GLPipeline implements GLResource, Pipeline {
 
     private boolean valid;
 
-    public GLPipeline(PipelineState state, String name, Shader... shaders) {
+    public GLPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
         this.state = state.copy();
         this.name = name;
 
         handle = GL33C.glCreateProgram();
         GL.setName(GLObjectType.PROGRAM, handle, name);
 
-        for (Shader shader : shaders) {
-            GL33C.glAttachShader(handle, ((GLResource) shader).getHandle());
-        }
+        GL33C.glAttachShader(handle, ((GLResource) vertexShader).getHandle());
+        GL33C.glAttachShader(handle, ((GLResource) fragmentShader).getHandle());
 
         GL33C.glLinkProgram(handle);
 
@@ -38,11 +37,14 @@ public class GLPipeline implements GLResource, Pipeline {
             throw new CreatePipelineException(name, message);
         }
 
-        for (Shader shader : shaders) {
-            for (Map.Entry<String, Integer> binding : ((GLShader) shader).uniformBlockBindings.entrySet()) {
-                int index = GL33C.glGetUniformBlockIndex(handle, binding.getKey());
-                GL33C.glUniformBlockBinding(handle, index, binding.getValue());
-            }
+        for (Map.Entry<String, Integer> binding : ((GLShader) vertexShader).uniformBlockBindings.entrySet()) {
+            int index = GL33C.glGetUniformBlockIndex(handle, binding.getKey());
+            GL33C.glUniformBlockBinding(handle, index, binding.getValue());
+        }
+
+        for (Map.Entry<String, Integer> binding : ((GLShader) fragmentShader).uniformBlockBindings.entrySet()) {
+            int index = GL33C.glGetUniformBlockIndex(handle, binding.getKey());
+            GL33C.glUniformBlockBinding(handle, index, binding.getValue());
         }
 
         valid = true;

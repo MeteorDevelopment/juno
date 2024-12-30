@@ -52,10 +52,10 @@ public interface Device {
 
     // Pipelines
 
-    Pipeline createPipeline(PipelineState state, String name, Shader... shaders);
+    Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name);
 
-    default Pipeline createPipeline(PipelineState state, Shader... shaders) {
-        return createPipeline(state, "", shaders);
+    default Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader) {
+        return createPipeline(state, vertexShader, fragmentShader, "");
     }
 
     // Commands

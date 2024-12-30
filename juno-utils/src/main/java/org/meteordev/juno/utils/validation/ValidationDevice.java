@@ -38,11 +38,20 @@ public class ValidationDevice implements Device {
 
     @Override
     public Buffer createBuffer(BufferType type, long size, String name) {
+        if (size < 0)
+            throw new ValidationException("invalid buffer size, needs to be larger than 0, got: " + size);
+
         return device.createBuffer(type, size, name);
     }
 
     @Override
     public Image createImage(int width, int height, ImageFormat format, String name) {
+        if (width < 0)
+            throw new ValidationException("invalid image width, needs to be larger than 0, got: " + width);
+
+        if (height < 0)
+            throw new ValidationException("invalid image height, needs to be larger than 0, got: " + height);
+
         return device.createImage(width, height, format, name);
     }
 
@@ -67,8 +76,8 @@ public class ValidationDevice implements Device {
     }
 
     @Override
-    public Pipeline createPipeline(PipelineState state, String name, Shader... shaders) {
-        return device.createPipeline(state, name, shaders);
+    public Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
+        return device.createPipeline(state, vertexShader, fragmentShader, name);
     }
 
     @Override

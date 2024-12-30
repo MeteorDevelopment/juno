@@ -13,6 +13,7 @@ public class ValidationRenderPass implements RenderPass {
     private final ValidationCommandList commands;
     private final RenderPass pass;
 
+    Pipeline pipeline;
     boolean ended;
 
     ValidationRenderPass(ValidationCommandList commands, RenderPass pass) {
@@ -28,15 +29,19 @@ public class ValidationRenderPass implements RenderPass {
     @Override
     public void bindPipeline(Pipeline pipeline) {
         if (ended)
-            throw new RuntimeException();
+            throw new ValidationException("render pass ended");
 
+        this.pipeline = pipeline;
         pass.bindPipeline(pipeline);
     }
 
     @Override
     public void bindImage(Image image, Sampler sampler, int slot) {
         if (ended)
-            throw new RuntimeException();
+            throw new ValidationException("render pass ended");
+
+        if (slot < 0 || slot >= 4)
+            throw new ValidationException("can only use image slots 0 - 3, got: " + slot);
 
         pass.bindImage(image, sampler, slot);
     }
@@ -44,7 +49,10 @@ public class ValidationRenderPass implements RenderPass {
     @Override
     public void setUniforms(ByteBuffer data, int slot) {
         if (ended)
-            throw new RuntimeException();
+            throw new ValidationException("render pass ended");
+
+        if (slot < 0 || slot >= 4)
+            throw new ValidationException("can only use uniform slots 0 - 3, got: " + slot);
 
         pass.setUniforms(data, slot);
     }
@@ -52,7 +60,13 @@ public class ValidationRenderPass implements RenderPass {
     @Override
     public void draw(Buffer indexBuffer, Buffer vertexBuffer, int count) {
         if (ended)
-            throw new RuntimeException();
+            throw new ValidationException("render pass ended");
+
+        if (pipeline == null)
+            throw new ValidationException("no pipeline bound");
+
+        if (count < 0)
+            throw new ValidationException("invalid primitive count, needs to be larger than 0, got: " + count);
 
         pass.draw(indexBuffer, vertexBuffer, count);
     }
@@ -60,7 +74,7 @@ public class ValidationRenderPass implements RenderPass {
     @Override
     public void end() {
         if (ended)
-            throw new RuntimeException();
+            throw new ValidationException("render pass ended");
 
         pass.end();
         ended = true;
