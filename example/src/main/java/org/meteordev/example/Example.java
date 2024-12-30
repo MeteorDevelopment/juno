@@ -20,6 +20,8 @@ import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
 import org.meteordev.juno.opengl.GLDevice;
 import org.meteordev.juno.utils.MeshBuilder;
+import org.meteordev.juno.utils.uniforms.UniformStruct;
+import org.meteordev.juno.utils.uniforms.Uniforms;
 import org.meteordev.juno.utils.validation.ValidationDevice;
 
 import java.io.IOException;
@@ -61,6 +63,9 @@ public class Example {
             }
             """;
 
+    @UniformStruct
+    public record MyUniforms(Matrix4f projection) {}
+
     public static void main(String[] args) {
         Window window = new Window("Juno Example", 1280, 720);
         Device device = ValidationDevice.wrap(GLDevice.create());
@@ -93,8 +98,8 @@ public class Example {
         );
         mesh.end();
 
-        ByteBuffer uniforms = MemoryUtil.memAlloc(4 * 4 * 4);
-        new Matrix4f().ortho2D(0, 1280, 0, 720).get(uniforms).rewind();
+        ByteBuffer uniforms = MemoryUtil.memAlloc(Uniforms.getSize(MyUniforms.class));
+        Uniforms.write(new MyUniforms(new Matrix4f().ortho2D(0, 1280, 0, 720)), uniforms).rewind();
 
         Image image = loadImage(device, "/meteor_logo.png");
         Sampler sampler = device.createSampler(Filter.LINEAR, Filter.LINEAR, Wrap.CLAMP_TO_EDGE);

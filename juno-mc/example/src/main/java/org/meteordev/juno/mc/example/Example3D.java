@@ -15,6 +15,8 @@ import org.meteordev.juno.api.pipeline.state.PipelineState;
 import org.meteordev.juno.api.pipeline.state.PrimitiveType;
 import org.meteordev.juno.api.pipeline.vertexformat.StandardFormats;
 import org.meteordev.juno.utils.MeshBuilder;
+import org.meteordev.juno.utils.uniforms.UniformStruct;
+import org.meteordev.juno.utils.uniforms.Uniforms;
 
 import java.nio.ByteBuffer;
 
@@ -45,6 +47,9 @@ public class Example3D {
             }
             """;
 
+    @UniformStruct
+    public record MyUniforms(Matrix4f projection, Matrix4f view) {}
+
     private static Pipeline pipeline;
     private static ByteBuffer uniforms;
     private static MeshBuilder mesh;
@@ -59,7 +64,7 @@ public class Example3D {
                 device.createShader(ShaderType.FRAGMENT, FRAGMENT_SHADER)
         );
 
-        uniforms = BufferUtils.createByteBuffer(2 * 4 * 4 * 4);
+        uniforms = BufferUtils.createByteBuffer(Uniforms.getSize(MyUniforms.class));
 
         mesh = new MeshBuilder(pipeline.getState());
     }
@@ -71,8 +76,7 @@ public class Example3D {
 
         CommandList commands = device.createCommandList();
 
-        projection.get(0, uniforms);
-        view.get(4 * 4 * 4, uniforms);
+        Uniforms.write(new MyUniforms(projection, view), uniforms).rewind();
 
         RenderPass pass = commands.beginRenderPass(
                 new Attachment(device.getBackBufferColor(), LoadOp.LOAD, null, StoreOp.STORE),

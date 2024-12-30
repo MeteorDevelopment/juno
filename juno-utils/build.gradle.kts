@@ -11,6 +11,8 @@ dependencies {
     compileOnly("org.joml:joml:${project.property("joml_version")}")
 
     compileOnly(project(":juno-api"))
+
+    implementation("org.ow2.asm:asm:${project.property("asm_version")}")
 }
 
 tasks.withType<JavaCompile> {
