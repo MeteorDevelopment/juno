@@ -1,7 +1,7 @@
 package org.meteordev.juno.opengl;
 
 import org.lwjgl.opengl.GL33C;
-import org.meteordev.juno.api.pipeline.state.PipelineState;
+import org.meteordev.juno.api.pipeline.state.RenderState;
 
 public class GLState {
     public boolean blendEnabled;
@@ -104,26 +104,26 @@ public class GLState {
 
     // Pipeline
 
-    public void applyPipelineState(PipelineState state) {
-        if (state.blendFunc == null) {
+    public void applyRenderState(RenderState state) {
+        if (state.blendFunc() == null) {
             disableBlend();
         } else {
-            enableBlend(GL.convert(state.blendFunc.srcRGB()), GL.convert(state.blendFunc.dstRGB()), GL.convert(state.blendFunc.srcAlpha()), GL.convert(state.blendFunc.dstAlpha()));
+            enableBlend(GL.convert(state.blendFunc().srcRGB()), GL.convert(state.blendFunc().dstRGB()), GL.convert(state.blendFunc().srcAlpha()), GL.convert(state.blendFunc().dstAlpha()));
         }
 
-        if (state.depthFunc == null) {
+        if (state.depthFunc() == null) {
             disableDepthTest();
         } else {
-            enableDepthTest(GL.convert(state.depthFunc));
+            enableDepthTest(GL.convert(state.depthFunc()));
         }
 
-        if (state.cullFace == null) {
+        if (state.cullFace() == null) {
             disableCull();
         } else {
-            enableCull(GL.convert(state.cullFace));
+            enableCull(GL.convert(state.cullFace()));
         }
 
-        switch (state.writeMask) {
+        switch (state.writeMask()) {
             case NONE -> {
                 setColorMask(false, false, false, false);
                 setDepthMask(false);

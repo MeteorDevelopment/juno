@@ -5,7 +5,7 @@ import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.pipeline.CreatePipelineException;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
-import org.meteordev.juno.api.pipeline.state.PipelineState;
+import org.meteordev.juno.api.pipeline.state.RenderState;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
 import org.meteordev.juno.opengl.GLResource;
@@ -13,15 +13,15 @@ import org.meteordev.juno.opengl.GLResource;
 import java.util.Map;
 
 public class GLGraphicsPipeline implements GLResource, GraphicsPipeline {
-    private final PipelineState state;
+    private final RenderState state;
     private final String name;
 
     private final int handle;
 
     private boolean valid;
 
-    public GLGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
-        this.state = state.copy();
+    public GLGraphicsPipeline(RenderState state, Shader vertexShader, Shader fragmentShader, String name) {
+        this.state = state;
         this.name = name;
 
         handle = GL33C.glCreateProgram();
@@ -56,7 +56,7 @@ public class GLGraphicsPipeline implements GLResource, GraphicsPipeline {
     }
 
     @Override
-    public PipelineState getState() {
+    public RenderState getState() {
         return state;
     }
 

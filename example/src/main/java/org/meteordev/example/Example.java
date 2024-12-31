@@ -13,7 +13,8 @@ import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.BlendFunc;
-import org.meteordev.juno.api.pipeline.state.PipelineState;
+import org.meteordev.juno.api.pipeline.state.RenderState;
+import org.meteordev.juno.api.pipeline.state.RenderStateBuilder;
 import org.meteordev.juno.api.pipeline.vertexformat.StandardFormats;
 import org.meteordev.juno.api.sampler.Filter;
 import org.meteordev.juno.api.sampler.Sampler;
@@ -81,9 +82,10 @@ public class Example {
         Shader fragment = device.createShader(ShaderType.FRAGMENT, FRAGMENT_SHADER);
 
         GraphicsPipeline pipeline = device.createGraphicsPipeline(
-                new PipelineState()
+                new RenderStateBuilder()
                         .setVertexFormat(StandardFormats.POSITION_2D_UV)
-                        .setBlendFunc(BlendFunc.alphaBlend()),
+                        .setBlendFunc(BlendFunc.alphaBlend())
+                        .build(),
                 vertex,
                 fragment
         );

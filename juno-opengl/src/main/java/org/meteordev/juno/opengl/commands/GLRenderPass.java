@@ -31,7 +31,7 @@ public class GLRenderPass implements RenderPass {
         this.pipeline = pipeline;
 
         commands.add(() -> {
-            commands.getDevice().getState().applyPipelineState(pipeline.getState());
+            commands.getDevice().getState().applyRenderState(pipeline.getState());
             GL33C.glUseProgram(((GLResource) pipeline).getHandle());
         });
     }
@@ -59,7 +59,7 @@ public class GLRenderPass implements RenderPass {
 
         commands.add(() -> {
             GL33C.glBindVertexArray(vao);
-            GL33C.glDrawElements(GL.convert(pipeline.getState().primitiveType), count, GL33C.GL_UNSIGNED_INT, 0);
+            GL33C.glDrawElements(GL.convert(pipeline.getState().primitiveType()), count, GL33C.GL_UNSIGNED_INT, 0);
         });
     }
 

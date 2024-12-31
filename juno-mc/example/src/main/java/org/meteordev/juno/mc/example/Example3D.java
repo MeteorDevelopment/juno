@@ -11,8 +11,8 @@ import org.meteordev.juno.api.commands.*;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.DepthFunc;
-import org.meteordev.juno.api.pipeline.state.PipelineState;
 import org.meteordev.juno.api.pipeline.state.PrimitiveType;
+import org.meteordev.juno.api.pipeline.state.RenderStateBuilder;
 import org.meteordev.juno.api.pipeline.vertexformat.StandardFormats;
 import org.meteordev.juno.utils.MeshBuilder;
 import org.meteordev.juno.utils.uniforms.UniformStruct;
@@ -56,10 +56,11 @@ public class Example3D {
 
     public static void init(Device device) {
         pipeline = device.createGraphicsPipeline(
-                new PipelineState()
+                new RenderStateBuilder()
                         .setVertexFormat(StandardFormats.POSITION_3D)
                         .setPrimitiveType(PrimitiveType.LINES)
-                        .setDepthFunc(DepthFunc.LESS),
+                        .setDepthFunc(DepthFunc.LESS)
+                        .build(),
                 device.createShader(ShaderType.VERTEX, VERTEX_SHADER),
                 device.createShader(ShaderType.FRAGMENT, FRAGMENT_SHADER)
         );

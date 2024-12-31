@@ -7,7 +7,7 @@ import org.meteordev.juno.api.commands.*;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.ShaderType;
-import org.meteordev.juno.api.pipeline.state.PipelineState;
+import org.meteordev.juno.api.pipeline.state.RenderStateBuilder;
 import org.meteordev.juno.api.pipeline.vertexformat.StandardFormats;
 import org.meteordev.juno.utils.MeshBuilder;
 
@@ -45,8 +45,9 @@ public class Example2D {
 
     public static void init(Device device) {
         pipeline = device.createGraphicsPipeline(
-                new PipelineState()
-                        .setVertexFormat(StandardFormats.POSITION_2D),
+                new RenderStateBuilder()
+                        .setVertexFormat(StandardFormats.POSITION_2D)
+                        .build(),
                 device.createShader(ShaderType.VERTEX, VERTEX_SHADER),
                 device.createShader(ShaderType.FRAGMENT, FRAGMENT_SHADER)
         );

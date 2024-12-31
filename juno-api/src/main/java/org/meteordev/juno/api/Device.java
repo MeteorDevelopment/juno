@@ -8,7 +8,7 @@ import org.meteordev.juno.api.image.ImageFormat;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
-import org.meteordev.juno.api.pipeline.state.PipelineState;
+import org.meteordev.juno.api.pipeline.state.RenderState;
 import org.meteordev.juno.api.sampler.Filter;
 import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
@@ -113,13 +113,13 @@ public interface Device {
      * @param name name of the pipeline, can be seen in debugging tools such as RenderDoc.
      * @return the new pipeline.
      */
-    GraphicsPipeline createGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name);
+    GraphicsPipeline createGraphicsPipeline(RenderState state, Shader vertexShader, Shader fragmentShader, String name);
 
     /**
      * Creates a GPU pipeline without a name.
-     * @see Device#createGraphicsPipeline(PipelineState, Shader, Shader, String)
+     * @see Device#createGraphicsPipeline(RenderState, Shader, Shader, String)
      */
-    default GraphicsPipeline createGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader) {
+    default GraphicsPipeline createGraphicsPipeline(RenderState state, Shader vertexShader, Shader fragmentShader) {
         return createGraphicsPipeline(state, vertexShader, fragmentShader, "");
     }
 

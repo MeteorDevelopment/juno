@@ -34,8 +34,8 @@ public class VaoManager {
         GL33C.glBindBuffer(GL33C.GL_ELEMENT_ARRAY_BUFFER, ((GLResource) index).getHandle());
         GL33C.glBindBuffer(GL33C.GL_ARRAY_BUFFER, ((GLResource) vertex).getHandle());
 
-        int stride = pipeline.getState().vertexFormat.getStride();
-        VertexAttribute[] attributes = pipeline.getState().vertexFormat.attributes();
+        int stride = pipeline.getState().vertexFormat().getStride();
+        VertexAttribute[] attributes = pipeline.getState().vertexFormat().attributes();
 
         long offset = 0;
 
