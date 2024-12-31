@@ -7,7 +7,7 @@ import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
@@ -76,8 +76,8 @@ public class ValidationDevice implements Device {
     }
 
     @Override
-    public Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
-        return device.createPipeline(state, vertexShader, fragmentShader, name);
+    public GraphicsPipeline createGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
+        return device.createGraphicsPipeline(state, vertexShader, fragmentShader, name);
     }
 
     @Override

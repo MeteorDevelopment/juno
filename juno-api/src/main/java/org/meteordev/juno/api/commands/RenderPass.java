@@ -2,7 +2,7 @@ package org.meteordev.juno.api.commands;
 
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.sampler.Sampler;
 
 import java.nio.ByteBuffer;
@@ -20,7 +20,7 @@ public interface RenderPass {
      * Binds a pipeline for subsequent commands.
      * @param pipeline the pipeline to bind.
      */
-    void bindPipeline(Pipeline pipeline);
+    void bindPipeline(GraphicsPipeline pipeline);
 
     /**
      * Binds an {@link Image} with a {@link Sampler} to a texture slot for shaders.

@@ -4,7 +4,7 @@ import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.sampler.Sampler;
 
 import java.nio.ByteBuffer;
@@ -13,7 +13,7 @@ public class ValidationRenderPass implements RenderPass {
     private final ValidationCommandList commands;
     private final RenderPass pass;
 
-    Pipeline pipeline;
+    GraphicsPipeline pipeline;
     boolean ended;
 
     ValidationRenderPass(ValidationCommandList commands, RenderPass pass) {
@@ -27,7 +27,7 @@ public class ValidationRenderPass implements RenderPass {
     }
 
     @Override
-    public void bindPipeline(Pipeline pipeline) {
+    public void bindPipeline(GraphicsPipeline pipeline) {
         if (ended)
             throw new ValidationException("render pass ended");
 

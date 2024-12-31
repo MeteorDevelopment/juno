@@ -6,7 +6,7 @@ import org.meteordev.juno.api.pipeline.state.PipelineState;
 /**
  * Represents the shaders and various state that a draw call is executed with.
  */
-public interface Pipeline extends Resource {
+public interface GraphicsPipeline extends Resource {
     /**
      * @return the state this pipeline will apply.
      */

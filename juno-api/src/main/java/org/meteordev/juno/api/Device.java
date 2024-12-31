@@ -5,7 +5,7 @@ import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
@@ -106,21 +106,21 @@ public interface Device {
     // Pipelines
 
     /**
-     * Creates a GPU pipeline.
+     * Creates a GPU graphics pipeline.
      * @param state the state to be applied for draw calls.
      * @param vertexShader the vertex shader to use.
      * @param fragmentShader the fragment shader to use.
      * @param name name of the pipeline, can be seen in debugging tools such as RenderDoc.
      * @return the new pipeline.
      */
-    Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name);
+    GraphicsPipeline createGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name);
 
     /**
      * Creates a GPU pipeline without a name.
-     * @see Device#createPipeline(PipelineState, Shader, Shader, String)
+     * @see Device#createGraphicsPipeline(PipelineState, Shader, Shader, String)
      */
-    default Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader) {
-        return createPipeline(state, vertexShader, fragmentShader, "");
+    default GraphicsPipeline createGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader) {
+        return createGraphicsPipeline(state, vertexShader, fragmentShader, "");
     }
 
     // Commands

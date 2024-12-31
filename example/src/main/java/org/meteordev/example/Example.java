@@ -9,7 +9,7 @@ import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.commands.*;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.BlendFunc;
@@ -80,7 +80,7 @@ public class Example {
         Shader vertex = device.createShader(ShaderType.VERTEX, VERTEX_SHADER);
         Shader fragment = device.createShader(ShaderType.FRAGMENT, FRAGMENT_SHADER);
 
-        Pipeline pipeline = device.createPipeline(
+        GraphicsPipeline pipeline = device.createGraphicsPipeline(
                 new PipelineState()
                         .setVertexFormat(StandardFormats.POSITION_2D_UV)
                         .setBlendFunc(BlendFunc.alphaBlend()),

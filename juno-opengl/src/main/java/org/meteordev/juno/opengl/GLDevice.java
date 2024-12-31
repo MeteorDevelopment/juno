@@ -8,7 +8,7 @@ import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
@@ -20,7 +20,7 @@ import org.meteordev.juno.opengl.buffer.VaoManager;
 import org.meteordev.juno.opengl.commands.GLCommandList;
 import org.meteordev.juno.opengl.image.FramebufferManager;
 import org.meteordev.juno.opengl.image.GLImage;
-import org.meteordev.juno.opengl.pipeline.GLPipeline;
+import org.meteordev.juno.opengl.pipeline.GLGraphicsPipeline;
 import org.meteordev.juno.opengl.pipeline.GLShader;
 import org.meteordev.juno.opengl.sampler.GLSampler;
 
@@ -148,8 +148,8 @@ public class GLDevice implements Device {
     }
 
     @Override
-    public Pipeline createPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
-        return new GLPipeline(state, vertexShader, fragmentShader, name);
+    public GraphicsPipeline createGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
+        return new GLGraphicsPipeline(state, vertexShader, fragmentShader, name);
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLResource;
@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 public class GLRenderPass implements RenderPass {
     private final GLCommandList commands;
 
-    private Pipeline pipeline;
+    private GraphicsPipeline pipeline;
 
     GLRenderPass(GLCommandList commands) {
         this.commands = commands;
@@ -27,7 +27,7 @@ public class GLRenderPass implements RenderPass {
     }
 
     @Override
-    public void bindPipeline(Pipeline pipeline) {
+    public void bindPipeline(GraphicsPipeline pipeline) {
         this.pipeline = pipeline;
 
         commands.add(() -> {

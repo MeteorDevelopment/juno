@@ -8,7 +8,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.commands.*;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.DepthFunc;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
@@ -50,12 +50,12 @@ public class Example3D {
     @UniformStruct
     public record MyUniforms(Matrix4f projection, Matrix4f view) {}
 
-    private static Pipeline pipeline;
+    private static GraphicsPipeline pipeline;
     private static ByteBuffer uniforms;
     private static MeshBuilder mesh;
 
     public static void init(Device device) {
-        pipeline = device.createPipeline(
+        pipeline = device.createGraphicsPipeline(
                 new PipelineState()
                         .setVertexFormat(StandardFormats.POSITION_3D)
                         .setPrimitiveType(PrimitiveType.LINES)

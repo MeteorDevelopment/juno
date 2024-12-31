@@ -2,7 +2,7 @@ package org.meteordev.juno.opengl.buffer;
 
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.buffer.Buffer;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.vertexformat.VertexAttribute;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLResource;
@@ -15,7 +15,7 @@ public class VaoManager {
     private final Map<Key, Integer> vaos = new HashMap<>();
 
     @SuppressWarnings("Java8MapApi")
-    public int get(Pipeline pipeline, Buffer index, Buffer vertex) {
+    public int get(GraphicsPipeline pipeline, Buffer index, Buffer vertex) {
         Key key = new Key(index, vertex);
         Integer vao = vaos.get(key);
 
@@ -27,7 +27,7 @@ public class VaoManager {
         return vao;
     }
 
-    private int create(Pipeline pipeline, Buffer index, Buffer vertex) {
+    private int create(GraphicsPipeline pipeline, Buffer index, Buffer vertex) {
         int handle = GL33C.glGenVertexArrays();
         GL33C.glBindVertexArray(handle);
 

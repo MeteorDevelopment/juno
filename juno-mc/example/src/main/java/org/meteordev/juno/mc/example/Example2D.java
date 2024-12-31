@@ -5,7 +5,7 @@ import org.lwjgl.BufferUtils;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.commands.*;
 import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
 import org.meteordev.juno.api.pipeline.vertexformat.StandardFormats;
@@ -39,12 +39,12 @@ public class Example2D {
             }
             """;
 
-    private static Pipeline pipeline;
+    private static GraphicsPipeline pipeline;
     private static ByteBuffer uniforms;
     private static MeshBuilder mesh;
 
     public static void init(Device device) {
-        pipeline = device.createPipeline(
+        pipeline = device.createGraphicsPipeline(
                 new PipelineState()
                         .setVertexFormat(StandardFormats.POSITION_2D),
                 device.createShader(ShaderType.VERTEX, VERTEX_SHADER),

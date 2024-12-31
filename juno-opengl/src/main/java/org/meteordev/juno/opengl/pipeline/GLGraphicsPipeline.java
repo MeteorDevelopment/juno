@@ -3,7 +3,7 @@ package org.meteordev.juno.opengl.pipeline;
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.pipeline.CreatePipelineException;
-import org.meteordev.juno.api.pipeline.Pipeline;
+import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.state.PipelineState;
 import org.meteordev.juno.opengl.GL;
@@ -12,7 +12,7 @@ import org.meteordev.juno.opengl.GLResource;
 
 import java.util.Map;
 
-public class GLPipeline implements GLResource, Pipeline {
+public class GLGraphicsPipeline implements GLResource, GraphicsPipeline {
     private final PipelineState state;
     private final String name;
 
@@ -20,7 +20,7 @@ public class GLPipeline implements GLResource, Pipeline {
 
     private boolean valid;
 
-    public GLPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
+    public GLGraphicsPipeline(PipelineState state, Shader vertexShader, Shader fragmentShader, String name) {
         this.state = state.copy();
         this.name = name;
 
