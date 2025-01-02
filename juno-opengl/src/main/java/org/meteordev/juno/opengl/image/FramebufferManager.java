@@ -6,6 +6,7 @@ import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.opengl.GLResource;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 // TODO: Bad
@@ -27,6 +28,19 @@ public class FramebufferManager {
     public void put(Image color, Image depth, int framebuffer) {
         Key key = new Key(color, depth);
         framebuffers.put(key, framebuffer);
+    }
+
+    public void destroy(Image image) {
+        for (Iterator<Key> it = framebuffers.keySet().iterator(); it.hasNext();) {
+            Key key = it.next();
+
+            if (key.color == image || key.depth == image) {
+                int framebuffer = framebuffers.get(key);
+                GL33C.glDeleteFramebuffers(framebuffer);
+
+                it.remove();
+            }
+        }
     }
 
     private int create(Attachment color, Attachment depth) {

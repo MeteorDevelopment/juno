@@ -8,6 +8,7 @@ import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLResource;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 // TODO: Bad
@@ -25,6 +26,19 @@ public class VaoManager {
         }
 
         return vao;
+    }
+
+    public void destroy(Buffer buffer) {
+        for (Iterator<Key> it = vaos.keySet().iterator(); it.hasNext();) {
+            Key key = it.next();
+
+            if (key.index == buffer || key.vertex == buffer) {
+                int vao = vaos.get(key);
+                GL33C.glDeleteVertexArrays(vao);
+
+                it.remove();
+            }
+        }
     }
 
     private int create(GraphicsPipeline pipeline, Buffer index, Buffer vertex) {

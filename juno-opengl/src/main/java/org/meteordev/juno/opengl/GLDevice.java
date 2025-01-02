@@ -98,11 +98,11 @@ public class GLDevice implements Device {
     }
 
     protected Image createBackBufferColor() {
-        return new GLImage(0, 0, ImageFormat.RGB, "Back buffer - Color", 0);
+        return new GLImage(this, 0, 0, ImageFormat.RGB, "Back buffer - Color", 0);
     }
 
     protected Image createBackBufferDepth() {
-        return new GLImage(0, 0, ImageFormat.R, "Back buffer - Depth", 0);
+        return new GLImage(this, 0, 0, ImageFormat.R, "Back buffer - Depth", 0);
     }
 
     protected int getBackBufferFramebuffer() {
@@ -118,13 +118,13 @@ public class GLDevice implements Device {
 
     @Override
     public Buffer createBuffer(BufferType type, long size, String name) {
-        return new GLBuffer(type, size, name);
+        return new GLBuffer(this, type, size, name);
     }
 
     @Override
     public Image createImage(int width, int height, ImageFormat format, String name) {
         int handle = GL33C.glGenTextures();
-        return new GLImage(width, height, format, name, handle);
+        return new GLImage(this, width, height, format, name, handle);
     }
 
     @Override
