@@ -39,9 +39,8 @@ public class GLRenderPass implements RenderPass {
     @Override
     public void bindImage(Image image, Sampler sampler, int slot) {
         commands.add(() -> {
-            GL33C.glActiveTexture(GL33C.GL_TEXTURE0 + slot);
-            GL33C.glBindTexture(GL33C.GL_TEXTURE_2D, ((GLResource) image).getHandle());
-            GL33C.glBindSampler(slot, ((GLResource) sampler).getHandle());
+            commands.getDevice().getBindings().bind(image, slot);
+            commands.getDevice().getBindings().bind(sampler, slot);
         });
     }
 

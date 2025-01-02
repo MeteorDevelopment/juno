@@ -7,6 +7,7 @@ import org.meteordev.juno.api.commands.Attachment;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
+import org.meteordev.juno.opengl.GLBindings;
 import org.meteordev.juno.opengl.GLState;
 
 import java.nio.ByteBuffer;
@@ -42,13 +43,21 @@ public class MCCommandList implements CommandList {
 
     @Override
     public void submit() {
+        // Set state
         GLState mcState = device.getMcState();
         device.getState().setTo(mcState);
 
+        GLBindings mcBindings = device.getMcBindings();
+        device.getBindings().setTo(mcBindings);
+
         BufferRenderer.reset();
 
+        // Submit
         commands.submit();
 
+        // Sync state
         device.getState().syncWith(mcState);
+
+        device.getBindings().syncWith(mcBindings);
     }
 }

@@ -13,7 +13,6 @@ import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.BlendFunc;
-import org.meteordev.juno.api.pipeline.state.RenderState;
 import org.meteordev.juno.api.pipeline.state.RenderStateBuilder;
 import org.meteordev.juno.api.pipeline.vertexformat.StandardFormats;
 import org.meteordev.juno.api.sampler.Filter;

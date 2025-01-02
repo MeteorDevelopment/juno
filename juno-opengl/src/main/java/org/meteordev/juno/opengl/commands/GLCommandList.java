@@ -42,7 +42,7 @@ public class GLCommandList implements CommandList {
     @Override
     public void uploadToImage(ByteBuffer src, Image dst) {
         // TODO: Upload buffer
-        GL33C.glBindTexture(GL33C.GL_TEXTURE_2D, ((GLResource) dst).getHandle());
+        device.getBindings().bind(dst, -1);
 
         GL33C.glTexImage2D(
                 GL33C.GL_TEXTURE_2D,

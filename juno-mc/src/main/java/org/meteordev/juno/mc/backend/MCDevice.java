@@ -2,14 +2,17 @@ package org.meteordev.juno.mc.backend;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
+import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.BackendInfo;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.mc.mixin.CapabilityTrackerAccessor;
+import org.meteordev.juno.opengl.GLBindings;
 import org.meteordev.juno.opengl.GLDevice;
 import org.meteordev.juno.opengl.GLState;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class MCDevice extends GLDevice {
     private final GlStateManager.BlendFuncState mcBlendState;
@@ -17,17 +20,23 @@ public class MCDevice extends GLDevice {
     private final GlStateManager.CullFaceState mcCullState;
     private final GlStateManager.ColorMask mcColorMask;
 
+    private final GlStateManager.Texture2DState[] mcTextureState;
+
     private final GLState mcState;
+    private final GLBindings mcBindings;
 
     private final BackendInfo info;
 
     public MCDevice() {
-        this.mcBlendState = getMcState(GlStateManager.BlendFuncState.class);
-        this.mcDepthState = getMcState(GlStateManager.DepthTestState.class);
-        this.mcCullState = getMcState(GlStateManager.CullFaceState.class);
-        this.mcColorMask = getMcState(GlStateManager.ColorMask.class);
+        this.mcBlendState = getGlStateManagerField(GlStateManager.BlendFuncState.class);
+        this.mcDepthState = getGlStateManagerField(GlStateManager.DepthTestState.class);
+        this.mcCullState = getGlStateManagerField(GlStateManager.CullFaceState.class);
+        this.mcColorMask = getGlStateManagerField(GlStateManager.ColorMask.class);
+
+        this.mcTextureState = getGlStateManagerField(GlStateManager.Texture2DState[].class);
 
         this.mcState = new GLState();
+        this.mcBindings = new GLBindings();
 
         BackendInfo glInfo = super.getBackendInfo();
         info = new BackendInfo("Minecraft (" + glInfo.name() + ")", glInfo.detail());
@@ -55,6 +64,18 @@ public class MCDevice extends GLDevice {
         return mcState;
     }
 
+    GLBindings getMcBindings() {
+        for (int i = 0; i < mcBindings.textures.length; i++) {
+            mcBindings.textures[i] = mcTextureState[i].boundTexture;
+        }
+
+        mcBindings.activeTexture = GlStateManager._getActiveTexture() - GL33C.GL_TEXTURE0;
+
+        Arrays.fill(mcBindings.samplers, 0);
+
+        return mcBindings;
+    }
+
     @Override
     protected Image createBackBufferColor() {
         return new MCFramebufferImage(MinecraftClient.getInstance().getFramebuffer(), true);
@@ -76,7 +97,7 @@ public class MCDevice extends GLDevice {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getMcState(Class<T> target) {
+    private static <T> T getGlStateManagerField(Class<T> target) {
         try {
             Class<?> glStateManager = GlStateManager.class;
 

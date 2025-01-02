@@ -6,3 +6,5 @@ accessible class com/mojang/blaze3d/platform/GlStateManager$CullFaceState
 accessible class com/mojang/blaze3d/platform/GlStateManager$ColorMask
 
 accessible class com/mojang/blaze3d/platform/GlStateManager$CapabilityTracker
+
+accessible class com/mojang/blaze3d/platform/GlStateManager$Texture2DState

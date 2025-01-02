@@ -27,6 +27,7 @@ import org.meteordev.juno.opengl.sampler.GLSampler;
 public class GLDevice implements Device {
     private final GLLimits limits;
     private final GLState state;
+    private final GLBindings bindings;
 
     private final VaoManager vaoManager;
     private final FramebufferManager framebufferManager;
@@ -42,6 +43,7 @@ public class GLDevice implements Device {
     protected GLDevice() {
         limits = new GLLimits(GL33C.glGetInteger(GL33C.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT));
         state = new GLState();
+        bindings = new GLBindings();
 
         GL.objectLabelAvailable = org.lwjgl.opengl.GL.getCapabilities().glObjectLabel != 0;
         state.load();
@@ -79,6 +81,10 @@ public class GLDevice implements Device {
 
     public GLState getState() {
         return state;
+    }
+
+    public GLBindings getBindings() {
+        return bindings;
     }
 
     public VaoManager getVaoManager() {
