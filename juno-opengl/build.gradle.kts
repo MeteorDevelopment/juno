@@ -12,6 +12,8 @@ dependencies {
 
     compileOnly("org.lwjgl:lwjgl:$lwjglVersion")
     compileOnly("org.lwjgl:lwjgl-opengl:$lwjglVersion")
+
+    implementation("io.github.douira:glsl-transformer:${project.property("glsl_transformer_version")}")
 }
 
 tasks.withType<JavaCompile> {

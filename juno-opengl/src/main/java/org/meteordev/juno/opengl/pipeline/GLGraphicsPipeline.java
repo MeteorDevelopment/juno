@@ -37,17 +37,28 @@ public class GLGraphicsPipeline implements GLResource, GraphicsPipeline {
             throw new CreatePipelineException(name, message);
         }
 
-        for (Map.Entry<String, Integer> binding : ((GLShader) vertexShader).uniformBlockBindings.entrySet()) {
-            int index = GL33C.glGetUniformBlockIndex(handle, binding.getKey());
-            GL33C.glUniformBlockBinding(handle, index, binding.getValue());
-        }
+        GL33C.glUseProgram(handle);
 
-        for (Map.Entry<String, Integer> binding : ((GLShader) fragmentShader).uniformBlockBindings.entrySet()) {
-            int index = GL33C.glGetUniformBlockIndex(handle, binding.getKey());
-            GL33C.glUniformBlockBinding(handle, index, binding.getValue());
-        }
+        applyBindings((GLShader) vertexShader);
+        applyBindings((GLShader) fragmentShader);
 
         valid = true;
+    }
+
+    private void applyBindings(GLShader shader) {
+        // Uniforms blocks
+
+        for (Map.Entry<String, Integer> binding : shader.uniformBlockBindings.entrySet()) {
+            int index = GL33C.glGetUniformBlockIndex(handle, binding.getKey());
+            GL33C.glUniformBlockBinding(handle, index, binding.getValue());
+        }
+
+        // Textures
+
+        for (Map.Entry<String, Integer> binding : shader.textureBindings.entrySet()) {
+            int location = GL33C.glGetUniformLocation(handle, binding.getKey());
+            GL33C.glUniform1i(location, binding.getValue());
+        }
     }
 
     @Override

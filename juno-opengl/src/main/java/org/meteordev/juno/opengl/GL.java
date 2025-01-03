@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL33C;
 import org.lwjgl.opengl.GL43C;
 import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.image.ImageFormat;
+import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.BlendFunc;
 import org.meteordev.juno.api.pipeline.state.CullFace;
 import org.meteordev.juno.api.pipeline.state.DepthFunc;
@@ -22,6 +23,13 @@ public class GL {
     }
 
     // Enums
+
+    public static int convert(ShaderType type) {
+        return switch (type) {
+            case VERTEX -> GL33C.GL_VERTEX_SHADER;
+            case FRAGMENT -> GL33C.GL_FRAGMENT_SHADER;
+        };
+    }
 
     public static int convert(BufferType type) {
         return switch (type) {

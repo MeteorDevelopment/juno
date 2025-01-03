@@ -32,8 +32,7 @@ public class Example2D {
             
             out vec2 v_Uv;
             
-            // Uniforms binding: 0
-            layout (std140) uniform Uniforms {
+            layout (std140, binding = 0) uniform Uniforms {
                 mat4 u_Projection;
             };
             
@@ -51,7 +50,7 @@ public class Example2D {
             
             in vec2 v_Uv;
             
-            uniform sampler2D u_Texture;
+            layout (binding = 0) uniform sampler2D u_Texture;
             
             void main() {
                 color = texture(u_Texture, v_Uv);

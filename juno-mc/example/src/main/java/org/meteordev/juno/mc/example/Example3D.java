@@ -26,8 +26,7 @@ public class Example3D {
             
             layout (location = 0) in vec3 pos;
             
-            // Uniforms binding: 0
-            layout (std140) uniform Uniforms {
+            layout (std140, binding = 0) uniform Uniforms {
                 mat4 u_Projection;
                 mat4 u_View;
             };

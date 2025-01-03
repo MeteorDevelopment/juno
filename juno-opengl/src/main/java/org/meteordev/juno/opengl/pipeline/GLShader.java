@@ -1,5 +1,14 @@
 package org.meteordev.juno.opengl.pipeline;
 
+import io.github.douira.glsl_transformer.ast.node.declaration.InterfaceBlockDeclaration;
+import io.github.douira.glsl_transformer.ast.node.declaration.TypeAndInitDeclaration;
+import io.github.douira.glsl_transformer.ast.node.expression.LiteralExpression;
+import io.github.douira.glsl_transformer.ast.node.type.qualifier.LayoutQualifier;
+import io.github.douira.glsl_transformer.ast.node.type.qualifier.NamedLayoutQualifierPart;
+import io.github.douira.glsl_transformer.ast.node.type.qualifier.TypeQualifier;
+import io.github.douira.glsl_transformer.ast.node.type.specifier.BuiltinFixedTypeSpecifier;
+import io.github.douira.glsl_transformer.ast.print.PrintType;
+import io.github.douira.glsl_transformer.ast.transform.SingleASTTransformer;
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.pipeline.CreateShaderException;
@@ -11,17 +20,16 @@ import org.meteordev.juno.opengl.GLResource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 public class GLShader implements GLResource, Shader {
-    private static final Pattern UNIFORM_BUFFER_PATTERN = Pattern.compile("layout\\s*\\(std140\\)\\s*uniform\\s+(\\w+)");
-
     private final ShaderType type;
     private final String name;
 
     private final int handle;
+
     public final Map<String, Integer> uniformBlockBindings;
+    public final Map<String, Integer> textureBindings;
 
     private boolean valid;
 
@@ -29,7 +37,62 @@ public class GLShader implements GLResource, Shader {
         this.type = type;
         this.name = name;
 
-        handle = GL33C.glCreateShader(toGL(type));
+        var transformer = new SingleASTTransformer<>();
+        transformer.setPrintType(PrintType.INDENTED_ANNOTATED);
+
+        uniformBlockBindings = new HashMap<>();
+        textureBindings = new HashMap<>();
+
+        transformer.setTransformation((unit, root) -> {
+            // Uniform blocks
+
+            root.process(
+                    root.nodeIndex.getStream(InterfaceBlockDeclaration.class),
+                    declaration -> {
+                        var blockName = declaration.getBlockName().getName();
+                        var blockBinding = getBinding(declaration.getTypeQualifier());
+
+                        if (blockBinding.isPresent() && blockBinding.get().getExpression() instanceof LiteralExpression literal && literal.isInteger()) {
+                            uniformBlockBindings.put(blockName, (int) literal.getInteger());
+                            blockBinding.get().detachAndDelete();
+
+                            return;
+                        }
+
+                        throw new CreateShaderException(type, name, "Uniform block '" + blockName + "' doesn't have a binding.");
+                    }
+            );
+
+            // Textures
+
+            root.process(
+                    root.nodeIndex.getStream(TypeAndInitDeclaration.class),
+                    declaration -> {
+                        if (declaration.getType().getTypeSpecifier() instanceof BuiltinFixedTypeSpecifier specifier && specifier.type == BuiltinFixedTypeSpecifier.BuiltinType.SAMPLER2D) {
+                            var textureName = declaration.getMembers().get(0).getName().getName();
+                            var textureBinding = getBinding(declaration.getType().getTypeQualifier());
+
+                            if (textureBinding.isPresent() && textureBinding.get().getExpression() instanceof LiteralExpression literal && literal.isInteger()) {
+                                var layout = (LayoutQualifier) textureBinding.get().getParent();
+
+                                textureBindings.put(textureName, (int) literal.getInteger());
+                                textureBinding.get().detachAndDelete();
+
+                                if (layout.getParts().isEmpty())
+                                    layout.detachAndDelete();
+
+                                return;
+                            }
+
+                            throw new CreateShaderException(type, name, "Texture '"+ textureName + "' doesn't have a binding.");
+                        }
+                    }
+            );
+        });
+
+        source = transformer.transform(source);
+
+        handle = GL33C.glCreateShader(GL.convert(type));
         GL.setName(GLObjectType.SHADER, handle, name);
         GL33C.glShaderSource(handle, source);
         GL33C.glCompileShader(handle);
@@ -37,21 +100,6 @@ public class GLShader implements GLResource, Shader {
         if (GL33C.glGetShaderi(handle, GL33C.GL_COMPILE_STATUS) != GL33C.GL_TRUE) {
             String message = GL33C.glGetShaderInfoLog(handle);
             throw new CreateShaderException(type, name, message);
-        }
-
-        uniformBlockBindings = new HashMap<>();
-        Matcher matcher = UNIFORM_BUFFER_PATTERN.matcher(source);
-
-        while (matcher.find()) {
-            String blockName = matcher.group(1);
-            Pattern bindingPattern = Pattern.compile("// " + blockName + " binding: (\\d)");
-            Matcher bindingMatcher = bindingPattern.matcher(source);
-
-            if (bindingMatcher.find()) {
-                uniformBlockBindings.put(blockName, Integer.parseInt(bindingMatcher.group(1)));
-            } else {
-                throw new CreateShaderException(type, name, "Couldn't find an uniform buffer '" + blockName + "' binding slot");
-            }
         }
 
         valid = true;
@@ -86,10 +134,14 @@ public class GLShader implements GLResource, Shader {
         return "Shader '" + name + "'";
     }
 
-    private static int toGL(ShaderType type) {
-        return switch (type) {
-            case VERTEX -> GL33C.GL_VERTEX_SHADER;
-            case FRAGMENT -> GL33C.GL_FRAGMENT_SHADER;
-        };
+    private static Optional<NamedLayoutQualifierPart> getBinding(TypeQualifier qualifier) {
+        return qualifier.getParts().stream()
+                .filter(part -> part instanceof LayoutQualifier)
+                .map(part -> (LayoutQualifier) part)
+                .flatMap(layout -> layout.getParts().stream())
+                .filter(part -> part instanceof NamedLayoutQualifierPart)
+                .map(part -> (NamedLayoutQualifierPart) part)
+                .filter(part -> part.getName().getName().equals("binding"))
+                .findFirst();
     }
 }
