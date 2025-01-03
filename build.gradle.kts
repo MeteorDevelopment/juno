@@ -1,4 +1,3 @@
-import org.apache.tools.ant.taskdefs.Java
 import java.nio.charset.StandardCharsets
 
 subprojects {

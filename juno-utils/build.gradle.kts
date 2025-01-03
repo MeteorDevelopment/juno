@@ -16,6 +16,6 @@ dependencies {
 }
 
 tasks.withType<JavaCompile> {
-    sourceCompatibility = JavaVersion.VERSION_16.toString()
-    targetCompatibility = JavaVersion.VERSION_16.toString()
+    sourceCompatibility = JavaVersion.VERSION_17.toString()
+    targetCompatibility = JavaVersion.VERSION_17.toString()
 }
