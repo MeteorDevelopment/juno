@@ -54,7 +54,7 @@ public class GLShader implements GLResource, Shader {
 
                         if (blockBinding.isPresent() && blockBinding.get().getExpression() instanceof LiteralExpression literal && literal.isInteger()) {
                             uniformBlockBindings.put(blockName, (int) literal.getInteger());
-                            blockBinding.get().detachAndDelete();
+                            detachAndDelete(blockBinding.get());
 
                             return;
                         }
@@ -73,13 +73,8 @@ public class GLShader implements GLResource, Shader {
                             var textureBinding = getBinding(declaration.getType().getTypeQualifier());
 
                             if (textureBinding.isPresent() && textureBinding.get().getExpression() instanceof LiteralExpression literal && literal.isInteger()) {
-                                var layout = (LayoutQualifier) textureBinding.get().getParent();
-
                                 textureBindings.put(textureName, (int) literal.getInteger());
-                                textureBinding.get().detachAndDelete();
-
-                                if (layout.getParts().isEmpty())
-                                    layout.detachAndDelete();
+                                detachAndDelete(textureBinding.get());
 
                                 return;
                             }
@@ -132,6 +127,15 @@ public class GLShader implements GLResource, Shader {
     @Override
     public String toString() {
         return "Shader '" + name + "'";
+    }
+
+    private static void detachAndDelete(NamedLayoutQualifierPart part) {
+        var layout = (LayoutQualifier) part.getParent();
+
+        part.detachAndDelete();
+
+        if (layout.getParts().isEmpty())
+            layout.detachAndDelete();
     }
 
     private static Optional<NamedLayoutQualifierPart> getBinding(TypeQualifier qualifier) {
