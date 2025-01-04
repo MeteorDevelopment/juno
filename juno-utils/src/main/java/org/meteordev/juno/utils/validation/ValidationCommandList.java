@@ -29,6 +29,9 @@ public class ValidationCommandList implements CommandList {
 
     @Override
     public void uploadToBuffer(ByteBuffer src, Buffer dst) {
+        if (!dst.isValid())
+            throw new InvalidResourceException(dst);
+
         if (src.remaining() > dst.getSize())
             throw new ValidationException("buffer is too small, src: " + src.remaining() + ", dst: " + dst.getSize());
 
@@ -37,6 +40,9 @@ public class ValidationCommandList implements CommandList {
 
     @Override
     public void uploadToImage(ByteBuffer src, Image dst) {
+        if (!dst.isValid())
+            throw new InvalidResourceException(dst);
+
         int dstSize = dst.getWidth() * dst.getHeight() * dst.getFormat().size;
 
         if (src.remaining() > dstSize)
@@ -56,6 +62,9 @@ public class ValidationCommandList implements CommandList {
         if (depth != null && depth.loadOp() == LoadOp.CLEAR && depth.clearValue() == null)
             throw new ValidationException("depth attachment has loadOp set to CLEAR but doesn't have a clear value");
 
+        if (depth != null && !depth.image().isValid())
+            throw new InvalidResourceException(depth.image());
+
         if (color.length > 4)
             throw new ValidationException("maximum amount of color attachments is 4, got " + color.length);
 
@@ -64,6 +73,9 @@ public class ValidationCommandList implements CommandList {
 
             if (attachment.loadOp() == LoadOp.CLEAR && attachment.clearValue() == null)
                 throw new ValidationException("color attachment " + i + " has loadOp set to CLEAR but doesn't have a clear value");
+
+            if (!attachment.image().isValid())
+                throw new InvalidResourceException(attachment.image());
         }
 
         boolean anyBackBuffer = false;

@@ -77,6 +77,12 @@ public class ValidationDevice implements Device {
 
     @Override
     public GraphicsPipeline createGraphicsPipeline(RenderState state, Shader vertexShader, Shader fragmentShader, String name) {
+        if (!vertexShader.isValid())
+            throw new InvalidResourceException(vertexShader);
+
+        if (!fragmentShader.isValid())
+            throw new InvalidResourceException(fragmentShader);
+
         return device.createGraphicsPipeline(state, vertexShader, fragmentShader, name);
     }
 

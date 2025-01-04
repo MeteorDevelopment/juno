@@ -32,6 +32,9 @@ public class ValidationRenderPass implements RenderPass {
         if (ended)
             throw new ValidationException("render pass ended");
 
+        if (!pipeline.isValid())
+            throw new InvalidResourceException(pipeline);
+
         this.pipeline = pipeline;
         pass.bindPipeline(pipeline);
     }
@@ -40,6 +43,12 @@ public class ValidationRenderPass implements RenderPass {
     public void bindImage(Image image, Sampler sampler, int slot) {
         if (ended)
             throw new ValidationException("render pass ended");
+
+        if (!image.isValid())
+            throw new InvalidResourceException(image);
+
+        if (!sampler.isValid())
+            throw new InvalidResourceException(sampler);
 
         if (slot < 0 || slot >= 4)
             throw new ValidationException("can only use image slots 0 - 3, got: " + slot);
@@ -65,6 +74,12 @@ public class ValidationRenderPass implements RenderPass {
 
         if (pipeline == null)
             throw new ValidationException("no pipeline bound");
+
+        if (!indexBuffer.isValid())
+            throw new InvalidResourceException(indexBuffer);
+
+        if (!vertexBuffer.isValid())
+            throw new InvalidResourceException(vertexBuffer);
 
         if (indexBuffer.getType() != BufferType.INDEX)
             throw new ValidationException("invalid indexBuffer type, needs to be BufferType.INDEX but got BufferType." + indexBuffer.getType());
