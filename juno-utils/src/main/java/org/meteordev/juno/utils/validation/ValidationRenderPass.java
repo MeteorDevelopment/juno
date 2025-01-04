@@ -1,6 +1,7 @@
 package org.meteordev.juno.utils.validation;
 
 import org.meteordev.juno.api.buffer.Buffer;
+import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
@@ -64,6 +65,12 @@ public class ValidationRenderPass implements RenderPass {
 
         if (pipeline == null)
             throw new ValidationException("no pipeline bound");
+
+        if (indexBuffer.getType() != BufferType.INDEX)
+            throw new ValidationException("invalid indexBuffer type, needs to be BufferType.INDEX but got BufferType." + indexBuffer.getType());
+
+        if (vertexBuffer.getType() != BufferType.VERTEX)
+            throw new ValidationException("invalid vertexBuffer type, needs to be BufferType.VERTEX but got BufferType." + indexBuffer.getType());
 
         if (count < 0)
             throw new ValidationException("invalid primitive count, needs to be larger than 0, got: " + count);

@@ -73,7 +73,7 @@ public class GLCommandList implements CommandList {
 
             if (depth != null && depth.loadOp() == LoadOp.CLEAR) {
                 mask |= GL33C.GL_DEPTH_BUFFER_BIT;
-                GL33C.glClearDepth(color.clearValue().r());
+                GL33C.glClearDepth(depth.clearValue().r());
             }
 
             if (mask != 0) {

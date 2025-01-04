@@ -11,7 +11,7 @@ public class RenderStateBuilder {
     public BlendFunc blendFunc = null;
     public DepthFunc depthFunc = null;
     public CullFace cullFace = null;
-    public WriteMask writeMask = WriteMask.COLOR;
+    public WriteMask writeMask = WriteMask.COLOR_DEPTH;
 
     /**
      * The vertex format for the vertex buffer.
