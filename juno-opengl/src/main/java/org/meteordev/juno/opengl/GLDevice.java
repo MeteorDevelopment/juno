@@ -59,8 +59,8 @@ public class GLDevice implements Device {
         backBufferColor = createBackBufferColor();
         backBufferDepth = createBackBufferDepth();
 
-        framebufferManager.put(backBufferColor, null, getBackBufferFramebuffer());
-        framebufferManager.put(backBufferColor, backBufferDepth, getBackBufferFramebuffer());
+        framebufferManager.put(new FramebufferManager.Key(null, backBufferColor, null, null, null), getBackBufferFramebuffer());
+        framebufferManager.put(new FramebufferManager.Key(backBufferDepth, backBufferColor, null, null, null), getBackBufferFramebuffer());
 
         // Info
         StringBuilder detail = new StringBuilder();

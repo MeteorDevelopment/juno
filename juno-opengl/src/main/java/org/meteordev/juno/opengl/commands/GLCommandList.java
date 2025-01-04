@@ -1,5 +1,7 @@
 package org.meteordev.juno.opengl.commands;
 
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.Attachment;
@@ -12,12 +14,14 @@ import org.meteordev.juno.opengl.GLDevice;
 import org.meteordev.juno.opengl.GLResource;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GLCommandList implements CommandList {
     private final GLDevice device;
     private final List<Runnable> commands = new ArrayList<>();
+    private final FloatBuffer rgba = BufferUtils.createFloatBuffer(4);
 
     public GLCommandList(GLDevice device) {
         this.device = device;
@@ -58,26 +62,27 @@ public class GLCommandList implements CommandList {
     }
 
     @Override
-    public RenderPass beginRenderPass(Attachment color, Attachment depth) {
-        int framebuffer = device.getFramebufferManager().get(color, depth);
+    public RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color) {
+        int framebuffer = device.getFramebufferManager().get(depth, color);
 
         add(() -> {
             GL33C.glBindFramebuffer(GL33C.GL_FRAMEBUFFER, framebuffer);
 
-            int mask = 0;
-
-            if (color.loadOp() == LoadOp.CLEAR) {
-                mask |= GL33C.GL_COLOR_BUFFER_BIT;
-                GL33C.glClearColor(color.clearValue().r(), color.clearValue().g(), color.clearValue().b(), color.clearValue().a());
-            }
-
             if (depth != null && depth.loadOp() == LoadOp.CLEAR) {
-                mask |= GL33C.GL_DEPTH_BUFFER_BIT;
-                GL33C.glClearDepth(depth.clearValue().r());
+                GL33C.glClearBufferfi(GL33C.GL_DEPTH_STENCIL, 0, depth.clearValue().r(), 0);
             }
 
-            if (mask != 0) {
-                GL33C.glClear(mask);
+            for (int i = 0; i < color.length; i++) {
+                Attachment attachment = color[i];
+
+                if (attachment.loadOp() == LoadOp.CLEAR) {
+                    rgba.put(0, attachment.clearValue().r());
+                    rgba.put(1, attachment.clearValue().g());
+                    rgba.put(2, attachment.clearValue().b());
+                    rgba.put(3, attachment.clearValue().a());
+
+                    GL33C.glClearBufferfv(GL33C.GL_COLOR, i, rgba);
+                }
             }
         });
 

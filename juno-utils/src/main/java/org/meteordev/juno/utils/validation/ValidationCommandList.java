@@ -1,5 +1,6 @@
 package org.meteordev.juno.utils.validation;
 
+import org.jetbrains.annotations.Nullable;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.Attachment;
@@ -45,20 +46,50 @@ public class ValidationCommandList implements CommandList {
     }
 
     @Override
-    public RenderPass beginRenderPass(Attachment color, Attachment depth) {
+    public RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color) {
         if (pass != null)
             throw new ValidationException("previous render pass was not yet ended, there can only be one active render pass per command list");
 
-        if (color == null && depth == null)
+        if (depth == null && color.length == 0)
             throw new ValidationException("render pass needs to have at least one attachment");
-
-        if (color != null && color.loadOp() == LoadOp.CLEAR && color.clearValue() == null)
-            throw new ValidationException("color attachment has loadOp set to CLEAR but doesn't have a clear value");
 
         if (depth != null && depth.loadOp() == LoadOp.CLEAR && depth.clearValue() == null)
             throw new ValidationException("depth attachment has loadOp set to CLEAR but doesn't have a clear value");
 
-        pass = new ValidationRenderPass(this, commands.beginRenderPass(color, depth));
+        if (color.length > 4)
+            throw new ValidationException("maximum amount of color attachments is 4, got " + color.length);
+
+        for (int i = 0; i < color.length; i++) {
+            Attachment attachment = color[i];
+
+            if (attachment.loadOp() == LoadOp.CLEAR && attachment.clearValue() == null)
+                throw new ValidationException("color attachment " + i + " has loadOp set to CLEAR but doesn't have a clear value");
+        }
+
+        boolean anyBackBuffer = false;
+        boolean allBackBuffer = true;
+
+        if (depth != null) {
+            if (depth.image() == getDevice().getBackBufferDepth())
+                anyBackBuffer = true;
+            else
+                allBackBuffer = false;
+        }
+
+        for (Attachment attachment : color) {
+            if (attachment.image() == getDevice().getBackBufferColor())
+                anyBackBuffer = true;
+            else
+                allBackBuffer = false;
+        }
+
+        if (anyBackBuffer && !allBackBuffer)
+            throw new ValidationException("if rendering to any back-buffer image then all attachments need to be from the back-buffer, you can't mix back-buffer and non back-buffer images");
+
+        if (anyBackBuffer && color.length > 1)
+            throw new ValidationException(("if rendering to any back-buffer image then you can't have more than 1 color attachment, got " + color.length));
+
+        pass = new ValidationRenderPass(this, commands.beginRenderPass(depth, color));
         return pass;
     }
 

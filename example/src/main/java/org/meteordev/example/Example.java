@@ -111,8 +111,8 @@ public class Example {
             CommandList commands = device.createCommandList();
 
             RenderPass pass = commands.beginRenderPass(
-                    new Attachment(device.getBackBufferColor(), LoadOp.CLEAR, new ClearValue(0.9f, 0.9f, 0.9f, 1), StoreOp.STORE),
-                    null
+                    null,
+                    new Attachment(device.getBackBufferColor(), LoadOp.CLEAR, new ClearValue(0.9f, 0.9f, 0.9f, 1), StoreOp.STORE)
             );
 
             pass.bindPipeline(pipeline);

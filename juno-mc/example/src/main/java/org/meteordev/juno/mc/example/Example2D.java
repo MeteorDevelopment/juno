@@ -96,8 +96,8 @@ public class Example2D {
         CommandList commands = device.createCommandList();
 
         RenderPass pass = commands.beginRenderPass(
-                new Attachment(device.getBackBufferColor(), LoadOp.LOAD, null, StoreOp.STORE),
-                null
+                null,
+                new Attachment(device.getBackBufferColor(), LoadOp.LOAD, null, StoreOp.STORE)
         );
 
         pass.bindPipeline(pipeline);

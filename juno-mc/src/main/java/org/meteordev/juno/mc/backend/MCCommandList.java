@@ -1,6 +1,7 @@
 package org.meteordev.juno.mc.backend;
 
 import net.minecraft.client.render.BufferRenderer;
+import org.jetbrains.annotations.Nullable;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.Attachment;
@@ -37,8 +38,8 @@ public class MCCommandList implements CommandList {
     }
 
     @Override
-    public RenderPass beginRenderPass(Attachment color, Attachment depth) {
-        return commands.beginRenderPass(color, depth);
+    public RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color) {
+        return commands.beginRenderPass(depth, color);
     }
 
     @Override

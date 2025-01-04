@@ -79,8 +79,8 @@ public class Example3D {
         Uniforms.write(new MyUniforms(projection, view), uniforms).rewind();
 
         RenderPass pass = commands.beginRenderPass(
-                new Attachment(device.getBackBufferColor(), LoadOp.LOAD, null, StoreOp.STORE),
-                new Attachment(device.getBackBufferDepth(), LoadOp.LOAD, null, StoreOp.STORE)
+                new Attachment(device.getBackBufferDepth(), LoadOp.LOAD, null, StoreOp.STORE),
+                new Attachment(device.getBackBufferColor(), LoadOp.LOAD, null, StoreOp.STORE)
         );
 
         pass.bindPipeline(pipeline);

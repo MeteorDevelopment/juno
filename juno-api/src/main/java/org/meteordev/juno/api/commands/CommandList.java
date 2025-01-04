@@ -36,11 +36,12 @@ public interface CommandList {
 
     /**
      * Starts a new GPU render pass.
-     * @param color the color attachment to render to, optional.
+     * Both the depth and color attachments are optional but both cannot be null at the same time.
      * @param depth the depth attachment to render to, optional.
+     * @param color the color attachments to render to, optional.
      * @return the new render pass.
      */
-    RenderPass beginRenderPass(@Nullable Attachment color, @Nullable Attachment depth);
+    RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color);
 
     // Submit
 
