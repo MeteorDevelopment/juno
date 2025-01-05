@@ -10,10 +10,10 @@ import io.github.douira.glsl_transformer.ast.node.type.specifier.BuiltinFixedTyp
 import io.github.douira.glsl_transformer.ast.print.PrintType;
 import io.github.douira.glsl_transformer.ast.transform.SingleASTTransformer;
 import org.lwjgl.opengl.GL33C;
-import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.pipeline.CreateShaderException;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
+import org.meteordev.juno.opengl.BaseGLResource;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
 import org.meteordev.juno.opengl.GLResource;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class GLShader implements GLResource, Shader {
+public class GLShader extends BaseGLResource implements GLResource, Shader {
     private final ShaderType type;
     private final String name;
 
@@ -30,8 +30,6 @@ public class GLShader implements GLResource, Shader {
 
     public final Map<String, Integer> uniformBlockBindings;
     public final Map<String, Integer> textureBindings;
-
-    private boolean valid;
 
     public GLShader(ShaderType type, String source, String name) {
         this.type = type;
@@ -96,8 +94,6 @@ public class GLShader implements GLResource, Shader {
             String message = GL33C.glGetShaderInfoLog(handle);
             throw new CreateShaderException(type, name, message);
         }
-
-        valid = true;
     }
 
     @Override
@@ -111,17 +107,8 @@ public class GLShader implements GLResource, Shader {
     }
 
     @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void destroy() {
-        if (!valid)
-            throw new InvalidResourceException(this);
-
+    protected void destroy() {
         GL33C.glDeleteShader(handle);
-        valid = false;
     }
 
     @Override

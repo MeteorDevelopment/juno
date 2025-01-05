@@ -1,15 +1,11 @@
 package org.meteordev.juno.opengl.image;
 
 import org.lwjgl.opengl.GL33C;
-import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
-import org.meteordev.juno.opengl.GL;
-import org.meteordev.juno.opengl.GLDevice;
-import org.meteordev.juno.opengl.GLObjectType;
-import org.meteordev.juno.opengl.GLResource;
+import org.meteordev.juno.opengl.*;
 
-public class GLImage implements GLResource, Image {
+public class GLImage extends BaseGLResource implements GLResource, Image {
     private final GLDevice device;
 
     private final int width;
@@ -18,8 +14,6 @@ public class GLImage implements GLResource, Image {
     private final String name;
 
     private final int handle;
-
-    private boolean valid;
 
     public GLImage(GLDevice device, int width, int height, ImageFormat format, String name, int handle) {
         this.device = device;
@@ -31,8 +25,6 @@ public class GLImage implements GLResource, Image {
 
         this.handle = handle;
         GL.setName(GLObjectType.IMAGE, handle, name);
-
-        valid = true;
     }
 
     @Override
@@ -56,19 +48,10 @@ public class GLImage implements GLResource, Image {
     }
 
     @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void destroy() {
-        if (!valid)
-            throw new InvalidResourceException(this);
-
+    protected void destroy() {
         device.getFramebufferManager().destroy(this);
 
         GL33C.glDeleteTextures(handle);
-        valid = false;
     }
 
     @Override

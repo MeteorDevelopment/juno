@@ -1,15 +1,11 @@
 package org.meteordev.juno.opengl.buffer;
 
 import org.lwjgl.opengl.GL33C;
-import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
-import org.meteordev.juno.opengl.GL;
-import org.meteordev.juno.opengl.GLDevice;
-import org.meteordev.juno.opengl.GLObjectType;
-import org.meteordev.juno.opengl.GLResource;
+import org.meteordev.juno.opengl.*;
 
-public class GLBuffer implements GLResource, Buffer {
+public class GLBuffer extends BaseGLResource implements GLResource, Buffer {
     private final GLDevice device;
 
     private final BufferType type;
@@ -17,8 +13,6 @@ public class GLBuffer implements GLResource, Buffer {
     private final String name;
 
     private final int handle;
-
-    private boolean valid;
 
     public GLBuffer(GLDevice device, BufferType type, long size, String name) {
         this.device = device;
@@ -30,8 +24,6 @@ public class GLBuffer implements GLResource, Buffer {
         handle = GL33C.glGenBuffers();
         GL33C.glBindBuffer(GL.convert(type), handle);
         GL.setName(GLObjectType.BUFFER, handle, name);
-
-        valid = true;
     }
 
     @Override
@@ -50,19 +42,10 @@ public class GLBuffer implements GLResource, Buffer {
     }
 
     @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void destroy() {
-        if (!valid)
-            throw new InvalidResourceException(this);
-
+    protected void destroy() {
         device.getVaoManager().destroy(this);
 
         GL33C.glDeleteBuffers(handle);
-        valid = false;
     }
 
     @Override

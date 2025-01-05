@@ -1,21 +1,19 @@
 package org.meteordev.juno.opengl.sampler;
 
 import org.lwjgl.opengl.GL33C;
-import org.meteordev.juno.api.InvalidResourceException;
 import org.meteordev.juno.api.sampler.Filter;
 import org.meteordev.juno.api.sampler.Sampler;
 import org.meteordev.juno.api.sampler.Wrap;
+import org.meteordev.juno.opengl.BaseGLResource;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLResource;
 
-public class GLSampler implements GLResource, Sampler {
+public class GLSampler extends BaseGLResource implements GLResource, Sampler {
     private final Filter min;
     private final Filter mag;
     private final Wrap wrap;
 
     private final int handle;
-
-    private boolean valid;
 
     public GLSampler(Filter min, Filter mag, Wrap wrap) {
         this.min = min;
@@ -28,8 +26,6 @@ public class GLSampler implements GLResource, Sampler {
         GL33C.glSamplerParameteri(handle, GL33C.GL_TEXTURE_WRAP_S, GL.convert(wrap));
         GL33C.glSamplerParameteri(handle, GL33C.GL_TEXTURE_WRAP_T, GL.convert(wrap));
         GL33C.glSamplerParameteri(handle, GL33C.GL_TEXTURE_WRAP_R, GL.convert(wrap));
-
-        valid = true;
     }
 
     @Override
@@ -53,17 +49,8 @@ public class GLSampler implements GLResource, Sampler {
     }
 
     @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void destroy() {
-        if (!valid)
-            throw new InvalidResourceException(this);
-
+    protected void destroy() {
         GL33C.glDeleteSamplers(handle);
-        valid = false;
     }
 
     @Override

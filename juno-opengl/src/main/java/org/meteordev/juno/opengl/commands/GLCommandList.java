@@ -3,12 +3,14 @@ package org.meteordev.juno.opengl.commands;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL33C;
+import org.meteordev.juno.api.Resource;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.Attachment;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.LoadOp;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
+import org.meteordev.juno.opengl.BaseGLResource;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLDevice;
 import org.meteordev.juno.opengl.GLResource;
@@ -20,8 +22,12 @@ import java.util.List;
 
 public class GLCommandList implements CommandList {
     private final GLDevice device;
-    private final List<Runnable> commands = new ArrayList<>();
     private final FloatBuffer rgba = BufferUtils.createFloatBuffer(4);
+
+    private final List<Runnable> commands = new ArrayList<>();
+    private final List<BaseGLResource> resources = new ArrayList<>();
+
+    private long fence;
 
     public GLCommandList(GLDevice device) {
         this.device = device;
@@ -86,6 +92,12 @@ public class GLCommandList implements CommandList {
             }
         });
 
+        if (depth != null)
+            addResource(depth.image());
+
+        for (Attachment attachment : color)
+            addResource(attachment.image());
+
         return new GLRenderPass(this);
     }
 
@@ -98,13 +110,35 @@ public class GLCommandList implements CommandList {
             command.run();
         }
 
+        fence = GL33C.glFenceSync(GL33C.GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
         // TODO: Not sure if flushing the opengl command queue is the right thing to do
         GL33C.glFlush();
+
+        device.addPendingCommandList(this);
     }
 
     // Other
 
     void add(Runnable command) {
         commands.add(command);
+    }
+
+    void addResource(Resource resource) {
+        if (resource instanceof BaseGLResource res) {
+            resources.add(res);
+            res.addReference();
+        }
+    }
+
+    public boolean checkIfFinished() {
+        if (GL33C.glGetSynci(fence, GL33C.GL_SYNC_STATUS, null) == GL33C.GL_SIGNALED) {
+            for (BaseGLResource resource : resources)
+                resource.dropReference();
+
+            return true;
+        }
+
+        return false;
     }
 }

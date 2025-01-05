@@ -77,7 +77,7 @@ public class GLGraphicsPipeline implements GLResource, GraphicsPipeline {
     }
 
     @Override
-    public void destroy() {
+    public void invalidate() {
         if (!valid)
             throw new InvalidResourceException(this);
 

@@ -44,7 +44,7 @@ public class MCFramebufferImage implements GLResource, Image {
     }
 
     @Override
-    public void destroy() {
+    public void invalidate() {
         throw new RuntimeException();
     }
 }

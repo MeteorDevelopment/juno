@@ -171,12 +171,12 @@ public class MeshBuilder {
 
     private void upload(CommandList commands) {
         if (vbo != null && vbo.getSize() < vertices.position()) {
-            vbo.destroy();
+            vbo.invalidate();
             vbo = null;
         }
 
         if (ibo != null && ibo.getSize() < indices.position()) {
-            ibo.destroy();
+            ibo.invalidate();
             ibo = null;
         }
 

@@ -10,7 +10,10 @@ public interface Resource {
     boolean isValid();
 
     /**
-     * Destroys the resource.
+     * Invalidates this resource, making it impossible to use in future commands.
+     * <p>
+     * Note: It is safe to invalidate a resource in the middle of recording a command list, for example (if you are not planning to use it anymore).
+     *       The underlying GPU resource won't be destroyed immediately, only when it is safe to do so.
      */
-    void destroy();
+    void invalidate();
 }

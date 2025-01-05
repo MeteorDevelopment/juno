@@ -24,6 +24,9 @@ import org.meteordev.juno.opengl.pipeline.GLGraphicsPipeline;
 import org.meteordev.juno.opengl.pipeline.GLShader;
 import org.meteordev.juno.opengl.sampler.GLSampler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GLDevice implements Device {
     private final GLLimits limits;
     private final GLState state;
@@ -37,6 +40,8 @@ public class GLDevice implements Device {
 
     private final Image backBufferColor;
     private final Image backBufferDepth;
+
+    private final List<GLCommandList> pendingCommandLists;
 
     private final BackendInfo info;
 
@@ -61,6 +66,8 @@ public class GLDevice implements Device {
 
         framebufferManager.put(new FramebufferManager.Key(null, backBufferColor, null, null, null), getBackBufferFramebuffer());
         framebufferManager.put(new FramebufferManager.Key(backBufferDepth, backBufferColor, null, null, null), getBackBufferFramebuffer());
+
+        pendingCommandLists = new ArrayList<>();
 
         // Info
         StringBuilder detail = new StringBuilder();
@@ -101,6 +108,10 @@ public class GLDevice implements Device {
 
     public int getUniformBuffer() {
         return uniformBuffer;
+    }
+
+    public void addPendingCommandList(GLCommandList commandList) {
+        pendingCommandLists.add(commandList);
     }
 
     protected Image createBackBufferColor() {
@@ -164,6 +175,8 @@ public class GLDevice implements Device {
 
     @Override
     public CommandList createCommandList() {
+        pendingCommandLists.removeIf(GLCommandList::checkIfFinished);
+
         return new GLCommandList(this);
     }
 }
