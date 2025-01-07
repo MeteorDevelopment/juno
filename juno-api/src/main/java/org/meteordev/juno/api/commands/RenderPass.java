@@ -18,6 +18,7 @@ public interface RenderPass {
 
     /**
      * Binds a pipeline for subsequent commands.
+     * This command clears all currently bound images and set uniform data.
      * @param pipeline the pipeline to bind.
      */
     void bindPipeline(GraphicsPipeline pipeline);

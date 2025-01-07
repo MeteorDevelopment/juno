@@ -11,4 +11,14 @@ public interface GraphicsPipeline extends Resource {
      * @return the state this pipeline will apply.
      */
     RenderState getState();
+
+    /**
+     * @return which uniform binding slots are used by the pipeline.
+     */
+    boolean[] getUniformBindings();
+
+    /**
+     * @return which image binding slots are used by the pipeline.
+     */
+    boolean[] getImageBindings();
 }

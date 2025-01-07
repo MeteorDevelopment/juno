@@ -36,7 +36,6 @@ public class GLDevice implements Device {
     private final VaoManager vaoManager;
     private final FramebufferManager framebufferManager;
 
-    private final GrowableByteBuffer uniforms;
     private final int uniformBuffer;
 
     private final Image backBufferColor;
@@ -47,28 +46,27 @@ public class GLDevice implements Device {
     private final BackendInfo info;
 
     protected GLDevice() {
-        limits = new GLLimits(GL33C.glGetInteger(GL33C.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT));
-        state = new GLState();
-        bindings = new GLBindings();
+        this.limits = new GLLimits(GL33C.glGetInteger(GL33C.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT));
+        this.state = new GLState();
+        this.bindings = new GLBindings();
 
         GL.objectLabelAvailable = org.lwjgl.opengl.GL.getCapabilities().glObjectLabel != 0;
         state.load();
 
-        vaoManager = new VaoManager();
-        framebufferManager = new FramebufferManager();
+        this.vaoManager = new VaoManager();
+        this.framebufferManager = new FramebufferManager();
 
-        uniforms = new GrowableByteBuffer(limits.uniformBufferOffsetAlignment(), 4096 * 1024);
-        uniformBuffer = GL33C.glGenBuffers();
+        this.uniformBuffer = GL33C.glGenBuffers();
         GL33C.glBindBuffer(GL33C.GL_UNIFORM_BUFFER, uniformBuffer);
         GL.setName(GLObjectType.BUFFER, uniformBuffer, "Uniforms");
 
-        backBufferColor = createBackBufferColor();
-        backBufferDepth = createBackBufferDepth();
+        this.backBufferColor = createBackBufferColor();
+        this.backBufferDepth = createBackBufferDepth();
 
-        framebufferManager.put(new FramebufferManager.Key(null, backBufferColor, null, null, null), getBackBufferFramebuffer());
-        framebufferManager.put(new FramebufferManager.Key(backBufferDepth, backBufferColor, null, null, null), getBackBufferFramebuffer());
+        this.framebufferManager.put(new FramebufferManager.Key(null, backBufferColor, null, null, null), getBackBufferFramebuffer());
+        this.framebufferManager.put(new FramebufferManager.Key(backBufferDepth, backBufferColor, null, null, null), getBackBufferFramebuffer());
 
-        pendingCommandLists = new ArrayList<>();
+        this.pendingCommandLists = new ArrayList<>();
 
         // Info
         StringBuilder detail = new StringBuilder();
@@ -101,10 +99,6 @@ public class GLDevice implements Device {
 
     public FramebufferManager getFramebufferManager() {
         return framebufferManager;
-    }
-
-    public GrowableByteBuffer getUniforms() {
-        return uniforms;
     }
 
     public int getUniformBuffer() {

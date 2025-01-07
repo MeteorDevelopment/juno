@@ -18,8 +18,6 @@ import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLObjectType;
 import org.meteordev.juno.opengl.GLResource;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class GLShader extends BaseGLResource implements GLResource, Shader {
@@ -28,18 +26,32 @@ public class GLShader extends BaseGLResource implements GLResource, Shader {
 
     private final int handle;
 
-    public final Map<String, Integer> uniformBlockBindings;
-    public final Map<String, Integer> textureBindings;
+    public final String[] uniformBindings;
+    public final String[] imageBindings;
 
     public GLShader(ShaderType type, String source, String name) {
         this.type = type;
         this.name = name;
 
+        this.uniformBindings = new String[4];
+        this.imageBindings = new String[4];
+
+        source = transformSource(source);
+
+        handle = GL33C.glCreateShader(GL.convert(type));
+        GL.setName(GLObjectType.SHADER, handle, name);
+        GL33C.glShaderSource(handle, source);
+        GL33C.glCompileShader(handle);
+
+        if (GL33C.glGetShaderi(handle, GL33C.GL_COMPILE_STATUS) != GL33C.GL_TRUE) {
+            String message = GL33C.glGetShaderInfoLog(handle);
+            throw new CreateShaderException(type, name, message);
+        }
+    }
+
+    private String transformSource(String source) {
         var transformer = new SingleASTTransformer<>();
         transformer.setPrintType(PrintType.INDENTED_ANNOTATED);
-
-        uniformBlockBindings = new HashMap<>();
-        textureBindings = new HashMap<>();
 
         transformer.setTransformation((unit, root) -> {
             // Uniform blocks
@@ -51,7 +63,10 @@ public class GLShader extends BaseGLResource implements GLResource, Shader {
                         var blockBinding = getBinding(declaration.getTypeQualifier());
 
                         if (blockBinding.isPresent() && blockBinding.get().getExpression() instanceof LiteralExpression literal && literal.isInteger()) {
-                            uniformBlockBindings.put(blockName, (int) literal.getInteger());
+                            if (literal.getInteger() < 0 || literal.getInteger() >= 4)
+                                throw new CreateShaderException(type, name, "can only use uniform slots 0 - 3, got: " + literal.getInteger());
+
+                            uniformBindings[(int) literal.getInteger()] = blockName;
                             detachAndDelete(blockBinding.get());
 
                             return;
@@ -71,7 +86,10 @@ public class GLShader extends BaseGLResource implements GLResource, Shader {
                             var textureBinding = getBinding(declaration.getType().getTypeQualifier());
 
                             if (textureBinding.isPresent() && textureBinding.get().getExpression() instanceof LiteralExpression literal && literal.isInteger()) {
-                                textureBindings.put(textureName, (int) literal.getInteger());
+                                if (literal.getInteger() < 0 || literal.getInteger() >= 4)
+                                    throw new CreateShaderException(type, name, "can only use image slots 0 - 3, got: " + literal.getInteger());
+
+                                imageBindings[(int) literal.getInteger()] = textureName;
                                 detachAndDelete(textureBinding.get());
 
                                 return;
@@ -83,17 +101,7 @@ public class GLShader extends BaseGLResource implements GLResource, Shader {
             );
         });
 
-        source = transformer.transform(source);
-
-        handle = GL33C.glCreateShader(GL.convert(type));
-        GL.setName(GLObjectType.SHADER, handle, name);
-        GL33C.glShaderSource(handle, source);
-        GL33C.glCompileShader(handle);
-
-        if (GL33C.glGetShaderi(handle, GL33C.GL_COMPILE_STATUS) != GL33C.GL_TRUE) {
-            String message = GL33C.glGetShaderInfoLog(handle);
-            throw new CreateShaderException(type, name, message);
-        }
+        return transformer.transform(source);
     }
 
     @Override

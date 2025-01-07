@@ -9,17 +9,25 @@ import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.sampler.Sampler;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class ValidationRenderPass implements RenderPass {
     private final ValidationCommandList commands;
     private final RenderPass pass;
 
-    GraphicsPipeline pipeline;
+    private GraphicsPipeline pipeline;
+
+    private final boolean[] uniformBindings;
+    private final boolean[] imageBindings;
+
     boolean ended;
 
     ValidationRenderPass(ValidationCommandList commands, RenderPass pass) {
         this.commands = commands;
         this.pass = pass;
+
+        this.uniformBindings = new boolean[4];
+        this.imageBindings = new boolean[4];
     }
 
     @Override
@@ -36,6 +44,10 @@ public class ValidationRenderPass implements RenderPass {
             throw new InvalidResourceException(pipeline);
 
         this.pipeline = pipeline;
+
+        Arrays.fill(uniformBindings, false);
+        Arrays.fill(imageBindings, false);
+
         pass.bindPipeline(pipeline);
     }
 
@@ -43,6 +55,9 @@ public class ValidationRenderPass implements RenderPass {
     public void bindImage(Image image, Sampler sampler, int slot) {
         if (ended)
             throw new ValidationException("render pass ended");
+
+        if (pipeline == null)
+            throw new ValidationException("no pipeline bound");
 
         if (!image.isValid())
             throw new InvalidResourceException(image);
@@ -53,6 +68,11 @@ public class ValidationRenderPass implements RenderPass {
         if (slot < 0 || slot >= 4)
             throw new ValidationException("can only use image slots 0 - 3, got: " + slot);
 
+        if (!pipeline.getImageBindings()[slot])
+            throw new ValidationException(String.format("%s does not use an image at slot %d", pipeline, slot));
+
+        imageBindings[slot] = true;
+
         pass.bindImage(image, sampler, slot);
     }
 
@@ -61,8 +81,16 @@ public class ValidationRenderPass implements RenderPass {
         if (ended)
             throw new ValidationException("render pass ended");
 
+        if (pipeline == null)
+            throw new ValidationException("no pipeline bound");
+
         if (slot < 0 || slot >= 4)
             throw new ValidationException("can only use uniform slots 0 - 3, got: " + slot);
+
+        if (!pipeline.getUniformBindings()[slot])
+            throw new ValidationException(String.format("%s does not use uniform data at slot %d", pipeline, slot));
+
+        uniformBindings[slot] = true;
 
         pass.setUniforms(data, slot);
     }
@@ -89,6 +117,17 @@ public class ValidationRenderPass implements RenderPass {
 
         if (count < 0)
             throw new ValidationException("invalid primitive count, needs to be larger than 0, got: " + count);
+
+        boolean[] usedUniformBindings = pipeline.getUniformBindings();
+        boolean [] usedImageBindings = pipeline.getImageBindings();
+
+        for (int i = 0; i < 4; i++) {
+            if (usedUniformBindings[i] && !uniformBindings[i])
+                throw new ValidationException(String.format("%s requires uniform data at slot %d but none were provided", pipeline, i));
+
+            if (usedImageBindings[i] && !imageBindings[i])
+                throw new ValidationException(String.format("%s requires a bound image at slot %d but none was bound", pipeline, i));
+        }
 
         pass.draw(indexBuffer, vertexBuffer, count);
     }

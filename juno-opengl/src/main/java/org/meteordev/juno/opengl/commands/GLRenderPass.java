@@ -51,7 +51,7 @@ public class GLRenderPass implements RenderPass {
 
     @Override
     public void setUniforms(ByteBuffer data, int slot) {
-        long offset = commands.getDevice().getUniforms().add(data);
+        long offset = commands.getUniforms().add(data);
         long size = data.remaining();
 
         commands.add(() -> GL33C.glBindBufferRange(GL33C.GL_UNIFORM_BUFFER, slot, commands.getDevice().getUniformBuffer(), offset, size));

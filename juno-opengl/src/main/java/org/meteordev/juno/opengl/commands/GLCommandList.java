@@ -11,10 +11,7 @@ import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.LoadOp;
 import org.meteordev.juno.api.commands.RenderPass;
 import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.opengl.BaseGLResource;
-import org.meteordev.juno.opengl.GL;
-import org.meteordev.juno.opengl.GLDevice;
-import org.meteordev.juno.opengl.GLResource;
+import org.meteordev.juno.opengl.*;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -28,12 +25,20 @@ public class GLCommandList implements CommandList {
     private final List<Runnable> commands = new ArrayList<>();
     private final List<BaseGLResource> resources = new ArrayList<>();
 
+    private GrowableByteBuffer uniforms;
+
     private long fence;
 
     public GLCommandList(GLDevice device) {
         this.device = device;
+    }
 
-        device.getUniforms().reset();
+    public GrowableByteBuffer getUniforms() {
+        if (uniforms == null) {
+            uniforms = new GrowableByteBuffer(device.getLimits().uniformBufferOffsetAlignment(), 4096 * 1024);
+        }
+
+        return uniforms;
     }
 
     // API
@@ -118,8 +123,12 @@ public class GLCommandList implements CommandList {
 
     @Override
     public void submit() {
-        GL33C.glBindBuffer(GL33C.GL_UNIFORM_BUFFER, device.getUniformBuffer());
-        GL33C.glBufferData(GL33C.GL_UNIFORM_BUFFER, device.getUniforms().getBuffer(), GL33C.GL_DYNAMIC_DRAW);
+        if (uniforms != null) {
+            GL33C.glBindBuffer(GL33C.GL_UNIFORM_BUFFER, device.getUniformBuffer());
+            GL33C.glBufferData(GL33C.GL_UNIFORM_BUFFER, uniforms.getBuffer(), GL33C.GL_DYNAMIC_DRAW);
+
+            uniforms.delete();
+        }
 
         for (Runnable command : commands) {
             command.run();
