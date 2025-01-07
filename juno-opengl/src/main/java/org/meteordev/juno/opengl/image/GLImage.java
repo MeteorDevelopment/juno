@@ -13,9 +13,9 @@ public class GLImage extends BaseGLResource implements GLResource, Image {
     private final ImageFormat format;
     private final String name;
 
-    private final int handle;
+    private int handle;
 
-    public GLImage(GLDevice device, int width, int height, ImageFormat format, String name, int handle) {
+    public GLImage(GLDevice device, int width, int height, ImageFormat format, String name) {
         this.device = device;
 
         this.width = width;
@@ -23,12 +23,16 @@ public class GLImage extends BaseGLResource implements GLResource, Image {
         this.format = format;
         this.name = name;
 
-        this.handle = handle;
-        GL.setName(GLObjectType.IMAGE, handle, name);
+        this.handle = -1;
     }
 
     @Override
     public int getHandle() {
+        if (handle == -1) {
+            handle = GL33C.glGenTextures();
+            GL.setName(GLObjectType.IMAGE, handle, name);
+        }
+
         return handle;
     }
 
@@ -49,9 +53,11 @@ public class GLImage extends BaseGLResource implements GLResource, Image {
 
     @Override
     protected void destroy() {
-        device.getFramebufferManager().destroy(this);
+        if (handle != -1) {
+            device.getFramebufferManager().destroy(this);
 
-        GL33C.glDeleteTextures(handle);
+            GL33C.glDeleteTextures(handle);
+        }
     }
 
     @Override

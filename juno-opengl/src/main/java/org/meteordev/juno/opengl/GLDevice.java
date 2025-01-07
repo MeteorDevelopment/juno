@@ -19,6 +19,7 @@ import org.meteordev.juno.opengl.buffer.GLBuffer;
 import org.meteordev.juno.opengl.buffer.VaoManager;
 import org.meteordev.juno.opengl.commands.GLCommandList;
 import org.meteordev.juno.opengl.image.FramebufferManager;
+import org.meteordev.juno.opengl.image.GLBackBufferImage;
 import org.meteordev.juno.opengl.image.GLImage;
 import org.meteordev.juno.opengl.pipeline.GLGraphicsPipeline;
 import org.meteordev.juno.opengl.pipeline.GLShader;
@@ -115,11 +116,11 @@ public class GLDevice implements Device {
     }
 
     protected Image createBackBufferColor() {
-        return new GLImage(this, 0, 0, ImageFormat.RGB, "Back buffer - Color", 0);
+        return new GLBackBufferImage("Back buffer - Color");
     }
 
     protected Image createBackBufferDepth() {
-        return new GLImage(this, 0, 0, ImageFormat.R, "Back buffer - Depth", 0);
+        return new GLBackBufferImage("Back buffer - Depth");
     }
 
     protected int getBackBufferFramebuffer() {
@@ -140,8 +141,7 @@ public class GLDevice implements Device {
 
     @Override
     public Image createImage(int width, int height, ImageFormat format, String name) {
-        int handle = GL33C.glGenTextures();
-        return new GLImage(this, width, height, format, name, handle);
+        return new GLImage(this, width, height, format, name);
     }
 
     @Override

@@ -12,7 +12,7 @@ public class GLBuffer extends BaseGLResource implements GLResource, Buffer {
     private final long size;
     private final String name;
 
-    private final int handle;
+    private int handle;
 
     public GLBuffer(GLDevice device, BufferType type, long size, String name) {
         this.device = device;
@@ -21,13 +21,17 @@ public class GLBuffer extends BaseGLResource implements GLResource, Buffer {
         this.size = size;
         this.name = name;
 
-        handle = GL33C.glGenBuffers();
-        GL33C.glBindBuffer(GL.convert(type), handle);
-        GL.setName(GLObjectType.BUFFER, handle, name);
+        this.handle = -1;
     }
 
     @Override
     public int getHandle() {
+        if (handle == -1) {
+            handle = GL33C.glGenBuffers();
+            GL33C.glBindBuffer(GL.convert(type), handle);
+            GL.setName(GLObjectType.BUFFER, handle, name);
+        }
+
         return handle;
     }
 
@@ -43,9 +47,11 @@ public class GLBuffer extends BaseGLResource implements GLResource, Buffer {
 
     @Override
     protected void destroy() {
-        device.getVaoManager().destroy(this);
+        if (handle != -1) {
+            device.getVaoManager().destroy(this);
 
-        GL33C.glDeleteBuffers(handle);
+            GL33C.glDeleteBuffers(handle);
+        }
     }
 
     @Override

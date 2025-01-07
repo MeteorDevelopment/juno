@@ -3,6 +3,7 @@ package org.meteordev.juno.opengl.commands;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL33C;
+import org.lwjgl.system.MemoryUtil;
 import org.meteordev.juno.api.Resource;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.commands.Attachment;
@@ -44,34 +45,48 @@ public class GLCommandList implements CommandList {
 
     @Override
     public void uploadToBuffer(ByteBuffer src, Buffer dst) {
-        // TODO: Upload buffer
-        GL33C.glBindBuffer(GL33C.GL_COPY_WRITE_BUFFER, ((GLResource) dst).getHandle());
-        GL33C.glBufferData(GL33C.GL_COPY_WRITE_BUFFER, src, GL33C.GL_DYNAMIC_DRAW);
+        long size = src.remaining();
+        long data = MemoryUtil.nmemAlloc(size);
+
+        MemoryUtil.memCopy(MemoryUtil.memAddress(src), data, size);
+
+        commands.add(() -> {
+            GL33C.glBindBuffer(GL33C.GL_COPY_WRITE_BUFFER, ((GLResource) dst).getHandle());
+            GL33C.nglBufferData(GL33C.GL_COPY_WRITE_BUFFER, size, data, GL33C.GL_DYNAMIC_DRAW);
+
+            MemoryUtil.nmemFree(data);
+        });
     }
 
     @Override
     public void uploadToImage(ByteBuffer src, Image dst) {
-        // TODO: Upload buffer
-        device.getBindings().bind(dst, -1);
+        long data = MemoryUtil.nmemAlloc(src.remaining());
 
-        GL33C.glTexImage2D(
-                GL33C.GL_TEXTURE_2D,
-                0,
-                GL.convertInternal(dst.getFormat()),
-                dst.getWidth(),
-                dst.getHeight(),
-                0,
-                GL.convert(dst.getFormat()),
-                GL.convertType(dst.getFormat()),
-                src
-        );
+        MemoryUtil.memCopy(MemoryUtil.memAddress(src), data, src.remaining());
+
+        commands.add(() -> {
+            device.getBindings().bind(dst, -1);
+
+            GL33C.nglTexImage2D(
+                    GL33C.GL_TEXTURE_2D,
+                    0,
+                    GL.convertInternal(dst.getFormat()),
+                    dst.getWidth(),
+                    dst.getHeight(),
+                    0,
+                    GL.convert(dst.getFormat()),
+                    GL.convertType(dst.getFormat()),
+                    data
+            );
+
+            MemoryUtil.nmemFree(data);
+        });
     }
 
     @Override
     public RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color) {
-        int framebuffer = device.getFramebufferManager().get(depth, color);
-
         add(() -> {
+            int framebuffer = device.getFramebufferManager().get(depth, color);
             GL33C.glBindFramebuffer(GL33C.GL_FRAMEBUFFER, framebuffer);
 
             if (depth != null && depth.loadOp() == LoadOp.CLEAR) {
