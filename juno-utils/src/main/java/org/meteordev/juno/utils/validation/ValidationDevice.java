@@ -87,11 +87,6 @@ public class ValidationDevice implements Device {
     }
 
     @Override
-    public void beginFrame() {
-        device.beginFrame();
-    }
-
-    @Override
     public CommandList createCommandList() {
         return new ValidationCommandList(this, device.createCommandList());
     }

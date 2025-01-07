@@ -126,11 +126,6 @@ public interface Device {
     // Commands
 
     /**
-     * Needs to be called at the start of a frame.
-     */
-    void beginFrame();
-
-    /**
      * Creates a GPU command list.
      * @return the new command list.
      */

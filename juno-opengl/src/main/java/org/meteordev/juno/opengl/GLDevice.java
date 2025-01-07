@@ -164,10 +164,6 @@ public class GLDevice implements Device {
     }
 
     @Override
-    public void beginFrame() {
-    }
-
-    @Override
     public CommandList createCommandList() {
         pendingCommandLists.removeIf(GLCommandList::checkIfFinished);
 

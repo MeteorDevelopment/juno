@@ -106,7 +106,6 @@ public class Example {
 
         while (!window.shouldClose()) {
             window.pollEvents();
-            device.beginFrame();
 
             CommandList commands = device.createCommandList();
 
