@@ -90,6 +90,7 @@ public interface Device {
      * Creates and compiles a GPU shader.
      * @param type the usage type.
      * @param source the GLSL source code.
+     *               For brief documentation of GLSL (mainly Juno specific features) look at {@link Shader}.
      * @param name name of the shader, can be seen in debugging tools such as RenderDoc.
      * @return the new shader.
      */
