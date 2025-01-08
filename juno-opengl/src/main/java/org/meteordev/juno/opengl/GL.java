@@ -3,15 +3,15 @@ package org.meteordev.juno.opengl;
 import org.lwjgl.opengl.GL33C;
 import org.lwjgl.opengl.GL43C;
 import org.meteordev.juno.api.buffer.BufferType;
+import org.meteordev.juno.api.image.Filter;
 import org.meteordev.juno.api.image.ImageFormat;
+import org.meteordev.juno.api.image.Wrap;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.BlendFunc;
 import org.meteordev.juno.api.pipeline.state.CullFace;
 import org.meteordev.juno.api.pipeline.state.DepthFunc;
 import org.meteordev.juno.api.pipeline.state.PrimitiveType;
 import org.meteordev.juno.api.pipeline.vertexformat.VertexType;
-import org.meteordev.juno.api.sampler.Filter;
-import org.meteordev.juno.api.sampler.Wrap;
 
 public class GL {
     public static boolean objectLabelAvailable = false;

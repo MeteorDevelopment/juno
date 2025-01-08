@@ -1,6 +1,9 @@
 package org.meteordev.juno.mc.mixin;
 
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.ObjectAllocator;
 import org.joml.Matrix4f;
 import org.meteordev.juno.mc.Juno;

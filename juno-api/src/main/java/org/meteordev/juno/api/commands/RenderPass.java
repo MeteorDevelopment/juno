@@ -2,8 +2,8 @@ package org.meteordev.juno.api.commands;
 
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.image.Image;
+import org.meteordev.juno.api.image.Sampler;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
-import org.meteordev.juno.api.sampler.Sampler;
 
 import java.nio.ByteBuffer;
 

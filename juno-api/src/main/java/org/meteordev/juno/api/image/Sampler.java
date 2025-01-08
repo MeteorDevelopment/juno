@@ -1,4 +1,4 @@
-package org.meteordev.juno.api.sampler;
+package org.meteordev.juno.api.image;
 
 import org.meteordev.juno.api.Resource;
 

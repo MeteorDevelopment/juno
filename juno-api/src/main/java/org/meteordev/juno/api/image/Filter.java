@@ -1,4 +1,4 @@
-package org.meteordev.juno.api.sampler;
+package org.meteordev.juno.api.image;
 
 /**
  * Determines how a color value is selected is the target rectangle does not match the size of the image.

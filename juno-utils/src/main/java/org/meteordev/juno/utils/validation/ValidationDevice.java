@@ -5,15 +5,11 @@ import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
-import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.api.image.ImageFormat;
+import org.meteordev.juno.api.image.*;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.api.pipeline.Shader;
 import org.meteordev.juno.api.pipeline.ShaderType;
 import org.meteordev.juno.api.pipeline.state.RenderState;
-import org.meteordev.juno.api.sampler.Filter;
-import org.meteordev.juno.api.sampler.Sampler;
-import org.meteordev.juno.api.sampler.Wrap;
 
 public class ValidationDevice implements Device {
     private final Device device;

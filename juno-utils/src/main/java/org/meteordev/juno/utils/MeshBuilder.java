@@ -5,8 +5,8 @@ import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
 import org.meteordev.juno.api.commands.RenderPass;
-import org.meteordev.juno.api.pipeline.state.RenderState;
 import org.meteordev.juno.api.pipeline.state.PrimitiveType;
+import org.meteordev.juno.api.pipeline.state.RenderState;
 import org.meteordev.juno.api.pipeline.vertexformat.VertexFormat;
 
 import java.nio.ByteBuffer;

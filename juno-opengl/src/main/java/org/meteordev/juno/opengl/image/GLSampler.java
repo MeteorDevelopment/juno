@@ -1,9 +1,9 @@
-package org.meteordev.juno.opengl.sampler;
+package org.meteordev.juno.opengl.image;
 
 import org.lwjgl.opengl.GL33C;
-import org.meteordev.juno.api.sampler.Filter;
-import org.meteordev.juno.api.sampler.Sampler;
-import org.meteordev.juno.api.sampler.Wrap;
+import org.meteordev.juno.api.image.Filter;
+import org.meteordev.juno.api.image.Sampler;
+import org.meteordev.juno.api.image.Wrap;
 import org.meteordev.juno.opengl.BaseGLResource;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLResource;

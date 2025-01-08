@@ -2,7 +2,7 @@ package org.meteordev.juno.opengl;
 
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.image.Image;
-import org.meteordev.juno.api.sampler.Sampler;
+import org.meteordev.juno.api.image.Sampler;
 
 import java.util.Arrays;
 
