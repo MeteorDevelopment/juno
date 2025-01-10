@@ -12,8 +12,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
 
     // Juno
-    implementation(project(":juno-mc", "namedElements"))
-    include(project(":juno-mc"))
+    modImplementation("org.meteordev:juno-mc:${property("juno_mc_version")}")
+    include("org.meteordev:juno-mc:${property("juno_mc_version")}")
 }
 
 tasks.withType<ProcessResources> {
