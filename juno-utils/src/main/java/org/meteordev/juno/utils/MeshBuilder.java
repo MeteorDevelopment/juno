@@ -79,13 +79,17 @@ public class MeshBuilder {
         return this;
     }
 
-    public MeshBuilder color(float r, float g, float b, float a) {
-        vertices.put((byte) (r * 256));
-        vertices.put((byte) (g * 256));
-        vertices.put((byte) (b * 256));
-        vertices.put((byte) (a * 256));
+    public MeshBuilder color(byte r, byte g, byte b, byte a) {
+        vertices.put(r);
+        vertices.put(g);
+        vertices.put(b);
+        vertices.put(a);
 
         return this;
+    }
+
+    public MeshBuilder color(float r, float g, float b, float a) {
+        return color((byte) (r * 255), (byte) (g * 255), (byte) (b * 255), (byte) (a * 255));
     }
 
     public int next() {
