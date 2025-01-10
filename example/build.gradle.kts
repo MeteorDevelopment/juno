@@ -34,6 +34,8 @@ dependencies {
 
     implementation("org.joml:joml:${project.property("joml_version")}")
 
+    implementation("de.javagl:jgltf-model:2.0.4")
+
     // LWJGL
 
     implementation(platform("org.lwjgl:lwjgl-bom:${project.property("lwjgl_version")}"))
