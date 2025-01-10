@@ -121,6 +121,8 @@ public class Example {
 
             window.swapBuffers();
         }
+
+        mesh.delete();
     }
 
     private static Image loadImage(Device device, String path) {

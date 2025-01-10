@@ -1,6 +1,6 @@
 package org.meteordev.juno.utils;
 
-import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 import org.meteordev.juno.api.buffer.Buffer;
 import org.meteordev.juno.api.buffer.BufferType;
 import org.meteordev.juno.api.commands.CommandList;
@@ -31,8 +31,8 @@ public class MeshBuilder {
         this.primitiveVerticesSize = primitive.vertexCount * format.getStride();
         this.primitiveIndicesSize = primitive.vertexCount * 4;
 
-        vertices = BufferUtils.createByteBuffer(primitiveVerticesSize * 512);
-        indices = BufferUtils.createByteBuffer(primitiveIndicesSize * 512);
+        vertices = MemoryUtil.memAlloc(primitiveVerticesSize * 512);
+        indices = MemoryUtil.memAlloc(primitiveIndicesSize * 512);
     }
 
     public MeshBuilder(RenderState state) {
@@ -137,9 +137,10 @@ public class MeshBuilder {
             int newSize = vertices.capacity() * 2;
             if (newSize % primitiveVerticesSize != 0) newSize += newSize % primitiveVerticesSize;
 
-            ByteBuffer newVertices = BufferUtils.createByteBuffer(newSize);
+            ByteBuffer newVertices = MemoryUtil.memAlloc(newSize);
             newVertices.put(vertices.limit(vertices.position()).rewind());
 
+            MemoryUtil.memFree(vertices);
             vertices = newVertices;
         }
 
@@ -148,9 +149,10 @@ public class MeshBuilder {
             int newSize = indices.capacity() * 2;
             if (newSize % primitiveIndicesSize != 0) newSize += newSize % (primitiveIndicesSize * 4);
 
-            ByteBuffer newIndices = BufferUtils.createByteBuffer(newSize);
+            ByteBuffer newIndices = MemoryUtil.memAlloc(newSize);
             newIndices.put(indices.limit(indices.position()).rewind());
 
+            MemoryUtil.memFree(indices);
             indices = newIndices;
         }
     }
@@ -167,6 +169,17 @@ public class MeshBuilder {
 
             pass.draw(ibo, vbo, indicesCount);
         }
+    }
+
+    public void delete() {
+        MemoryUtil.memFree(vertices);
+        MemoryUtil.memFree(indices);
+
+        if (vbo != null)
+            vbo.invalidate();
+
+        if (ibo != null)
+            ibo.invalidate();
     }
 
     private void upload(CommandList commands) {
