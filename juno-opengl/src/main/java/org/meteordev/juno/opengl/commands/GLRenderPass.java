@@ -63,9 +63,10 @@ public class GLRenderPass implements RenderPass {
 
         commands.add(() -> {
             int vao = commands.getDevice().getVaoManager().get(pipeline, indexBuffer, vertexBuffer);
-            GL33C.glBindVertexArray(vao);
 
+            GL33C.glBindVertexArray(vao);
             GL33C.glDrawElements(GL.convert(pipeline.getState().primitiveType()), count, GL33C.GL_UNSIGNED_INT, 0);
+            GL33C.glBindVertexArray(0);
         });
 
         commands.addResource(indexBuffer);
