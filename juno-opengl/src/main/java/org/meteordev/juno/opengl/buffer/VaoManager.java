@@ -42,11 +42,6 @@ public class VaoManager {
     }
 
     private int create(GraphicsPipeline pipeline, Buffer index, Buffer vertex) {
-        // Apparently OpenGL drivers ignore newly bound buffers after binding a VAO if there already are some buffers bound before
-        // Sanest OpenGL driver behaviour
-        GL33C.glBindBuffer(GL33C.GL_ELEMENT_ARRAY_BUFFER, 0);
-        GL33C.glBindBuffer(GL33C.GL_ARRAY_BUFFER, 0);
-
         int handle = GL33C.glGenVertexArrays();
         GL33C.glBindVertexArray(handle);
 
