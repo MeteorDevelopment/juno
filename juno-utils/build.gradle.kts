@@ -7,7 +7,7 @@ version = "${property("juno_utils_version")}"
 
 dependencies {
     // Juno
-    compileOnly(project(":juno-api"))
+    compileOnly("org.meteordev:juno-api:${property("juno_api_version")}")
 
     // LWJGL
     implementation("org.lwjgl:lwjgl:${property("lwjgl_version")}")

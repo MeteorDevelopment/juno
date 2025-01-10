@@ -28,9 +28,9 @@ val lwjglNatives = Pair(
 }
 
 dependencies {
-    implementation(project(":juno-api"))
-    implementation(project(":juno-utils"))
-    implementation(project(":juno-opengl"))
+    implementation("org.meteordev:juno-api:${property("juno_api_version")}")
+    implementation("org.meteordev:juno-utils:${property("juno_utils_version")}")
+    implementation("org.meteordev:juno-opengl:${property("juno_opengl_version")}")
 
     implementation("org.joml:joml:${project.property("joml_version")}")
 
@@ -59,21 +59,6 @@ tasks.withType<Jar> {
     }
 
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-}
-
-tasks.withType<JavaCompile> {
-    // Idk why Gradle didn't figure this out automatically but oh well
-    dependsOn(":juno-api:build")
-    dependsOn(":juno-utils:build")
-    dependsOn(":juno-opengl:build")
-}
-
-tasks {
-    sourcesJar {
-        dependsOn(":juno-api:jar")
-        dependsOn(":juno-utils:jar")
-        dependsOn(":juno-opengl:jar")
-    }
 }
 
 tasks.withType<PublishToMavenRepository> {
