@@ -197,10 +197,11 @@ public class MeshBuilder {
             ibo = null;
         }
 
-        if (vbo == null) {
+        if (vbo == null)
             vbo = commands.getDevice().createBuffer(BufferType.VERTEX, vertices.capacity());
+
+        if (ibo == null)
             ibo = commands.getDevice().createBuffer(BufferType.INDEX, indices.capacity());
-        }
 
         commands.uploadToBuffer(vertices.limit(vertices.position()).rewind(), vbo);
         commands.uploadToBuffer(indices.limit(indices.position()).rewind(), ibo);
