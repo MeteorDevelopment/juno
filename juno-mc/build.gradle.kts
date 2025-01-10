@@ -2,32 +2,35 @@ plugins {
     id("fabric-loom") version "1.9-SNAPSHOT"
 }
 
-group = "${project.property("group_base")}.mc"
+group = "${property("group_base")}.mc"
+version = "${property("juno_mc_version")}"
+
+val jij: Configuration by configurations.creating
+
+configurations {
+    api {
+        extendsFrom(jij)
+    }
+
+    include {
+        extendsFrom(jij)
+    }
+}
 
 dependencies {
     // Fabric
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+    minecraft("com.mojang:minecraft:${property("minecraft_version")}")
+    mappings("net.fabricmc:yarn:${property("yarn_mappings")}:v2")
+    modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
 
-    modApi(fabricApi.module("fabric-api-base", project.property("fapi_version").toString()))
-    include(fabricApi.module("fabric-api-base", project.property("fapi_version").toString()))
+    // Fabric API
+    modApi(fabricApi.module("fabric-api-base", "${property("fapi_version")}"))
+    include(fabricApi.module("fabric-api-base", "${property("fapi_version")}"))
 
     // Juno
-    api(project(":juno-api"))
-    include(project(":juno-api"))
-
-    api(project(":juno-utils"))
-    include(project(":juno-utils"))
-
-    api(project(":juno-opengl"))
-    include(project(":juno-opengl"))
-}
-
-tasks.withType<ProcessResources> {
-    filesMatching("fabric.mod.json") {
-        expand("version" to project.version)
-    }
+    jij(project(":juno-api"))
+    jij(project(":juno-utils"))
+    jij(project(":juno-opengl"))
 }
 
 tasks.withType<JavaCompile> {

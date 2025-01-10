@@ -2,8 +2,13 @@
   "schemaVersion": 1,
   "id": "juno",
   "name": "Juno",
-  "version": "${version}",
+  "version": "${juno_mc_version}",
   "description": "Minecraft implementation of the Juno rendering API.",
+
+  "contact": {
+    "sources": "https://github.com/MeteorDevelopment/juno"
+  },
+  "authors": [ "MineGame159" ],
 
   "environment": "client",
 

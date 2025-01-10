@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "juno-utils",
+  "version": "${juno_utils_version}",
+  "name": "Juno Utils",
+  "description": "Helper classes built on top of the Juno rendering API.",
+  "contact": {
+    "sources": "https://github.com/MeteorDevelopment/juno"
+  },
+  "authors": [ "MineGame159" ],
+  "environment": "client",
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": "juno"
+    }
+  }
+}

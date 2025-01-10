@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "juno-opengl",
+  "version": "${juno_opengl_version}",
+  "name": "Juno OpenGL",
+  "description": "OpenGL implementation of the Juno rendering API.",
+  "contact": {
+    "sources": "https://github.com/MeteorDevelopment/juno"
+  },
+  "authors": [ "MineGame159" ],
+  "environment": "client",
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": "juno"
+    }
+  }
+}

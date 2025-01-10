@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "juno-api",
+  "version": "${juno_api_version}",
+  "name": "Juno API",
+  "description": "The core Juno rendering API.",
+  "contact": {
+    "sources": "https://github.com/MeteorDevelopment/juno"
+  },
+  "authors": [ "MineGame159" ],
+  "environment": "client",
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": "juno"
+    }
+  }
+}

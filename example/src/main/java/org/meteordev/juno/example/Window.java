@@ -1,4 +1,4 @@
-package org.meteordev.example;
+package org.meteordev.juno.example;
 
 import org.lwjgl.opengl.GL;
 

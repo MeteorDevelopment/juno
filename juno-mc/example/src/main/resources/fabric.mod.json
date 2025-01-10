@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "juno-example",
   "name": "Juno Example",
-  "version": "${version}",
+  "version": "${juno_mc_version}",
   "description": "Example usage of the Juno rendering API in Minecraft.",
 
   "environment": "client",

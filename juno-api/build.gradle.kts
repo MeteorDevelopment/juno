@@ -2,13 +2,12 @@ plugins {
     id("java-library")
 }
 
-group = "${project.property("group_base")}.api"
+group = "${property("group_base")}.api"
+version = "${property("juno_api_version")}"
 
 dependencies {
-    compileOnly("org.lwjgl:lwjgl:${project.property("lwjgl_version")}")
-    compileOnly("org.lwjgl:lwjgl-stb:${project.property("lwjgl_version")}")
-
-    compileOnly("org.joml:joml:${project.property("joml_version")}")
+    // Annotations
+    compileOnly("org.jetbrains:annotations:${property("annotations_version")}")
 }
 
 tasks.withType<JavaCompile> {

@@ -2,18 +2,22 @@ plugins {
     id("java-library")
 }
 
-group = "${project.property("group_base")}.opengl"
+group = "${property("group_base")}.opengl"
+version = "${property("juno_opengl_version")}"
 
 dependencies {
+    // Juno
     compileOnly(project(":juno-api"))
-    compileOnly("org.joml:joml:${project.property("joml_version")}")
 
-    val lwjglVersion = project.property("lwjgl_version")
+    // LWJGL
+    implementation("org.lwjgl:lwjgl:${property("lwjgl_version")}")
+    implementation("org.lwjgl:lwjgl-opengl:${property("lwjgl_version")}")
 
-    compileOnly("org.lwjgl:lwjgl:$lwjglVersion")
-    compileOnly("org.lwjgl:lwjgl-opengl:$lwjglVersion")
+    // GLSL Transformer
+    implementation("io.github.douira:glsl-transformer:${property("glsl_transformer_version")}")
 
-    implementation("io.github.douira:glsl-transformer:${project.property("glsl_transformer_version")}")
+    // Annotations
+    compileOnly("org.jetbrains:annotations:${property("annotations_version")}")
 }
 
 tasks.withType<JavaCompile> {

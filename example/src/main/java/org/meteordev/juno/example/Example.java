@@ -1,4 +1,4 @@
-package org.meteordev.example;
+package org.meteordev.juno.example;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL43C;
