@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "${property("group_base")}.opengl"
-version = "${property("juno_opengl_version")}"
+version = "${property("juno_opengl_build_version")}"
 
 dependencies {
     // Juno

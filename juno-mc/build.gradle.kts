@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "${property("group_base")}.mc"
-version = "${property("juno_mc_version")}"
+version = "${property("juno_mc_build_version")}"
 
 val jij: Configuration by configurations.creating
 

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "${property("group_base")}.utils"
-version = "${property("juno_utils_version")}"
+version = "${property("juno_utils_build_version")}"
 
 dependencies {
     // Juno

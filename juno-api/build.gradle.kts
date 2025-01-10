@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "${property("group_base")}.api"
-version = "${property("juno_api_version")}"
+version = "${property("juno_api_build_version")}"
 
 dependencies {
     // Annotations

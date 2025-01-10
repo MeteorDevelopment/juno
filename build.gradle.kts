@@ -27,10 +27,10 @@ subprojects {
     tasks.withType<ProcessResources> {
         filesMatching("fabric.mod.json") {
             expand(
-                "juno_api_version" to rootProject.property("juno_api_version"),
-                "juno_opengl_version" to rootProject.property("juno_opengl_version"),
-                "juno_utils_version" to rootProject.property("juno_utils_version"),
-                "juno_mc_version" to rootProject.property("juno_mc_version")
+                "juno_api_version" to rootProject.property("juno_api_build_version"),
+                "juno_opengl_version" to rootProject.property("juno_opengl_build_version"),
+                "juno_utils_version" to rootProject.property("juno_utils_build_version"),
+                "juno_mc_version" to rootProject.property("juno_mc_build_version")
             )
         }
     }
