@@ -26,12 +26,14 @@ public class GLState {
         }
     }
 
-    private void enableBlend(int srcColor, int dstColor, int srcAlpha, int dstAlpha) {
+    private void enableBlend() {
         if (!blendEnabled) {
             GL33C.glEnable(GL33C.GL_BLEND);
             blendEnabled = true;
         }
+    }
 
+    private void setBlendFunc(int srcColor, int dstColor, int srcAlpha, int dstAlpha) {
         if (this.srcColor != srcColor || this.dstColor != dstColor || this.srcAlpha != srcAlpha || this.dstAlpha != dstAlpha) {
             GL33C.glBlendFuncSeparate(srcColor, dstColor, srcAlpha, dstAlpha);
             this.srcColor = srcColor;
@@ -50,12 +52,14 @@ public class GLState {
         }
     }
 
-    private void enableDepthTest(int func) {
+    private void enableDepthTest() {
         if (!depthTestEnabled) {
             GL33C.glEnable(GL33C.GL_DEPTH_TEST);
             depthTestEnabled = true;
         }
+    }
 
+    private void setDepthFunc(int func) {
         if (depthFunc != func) {
             GL33C.glDepthFunc(func);
             depthFunc = func;
@@ -71,12 +75,14 @@ public class GLState {
         }
     }
 
-    private void enableCull(int face) {
+    private void enableCull() {
         if (!cullEnabled) {
             GL33C.glEnable(GL33C.GL_CULL_FACE);
             cullEnabled = true;
         }
+    }
 
+    private void setCullFace(int face) {
         if (cullFace != face) {
             GL33C.glCullFace(face);
             cullFace = face;
@@ -108,19 +114,22 @@ public class GLState {
         if (state.blendFunc() == null) {
             disableBlend();
         } else {
-            enableBlend(GL.convert(state.blendFunc().srcRGB()), GL.convert(state.blendFunc().dstRGB()), GL.convert(state.blendFunc().srcAlpha()), GL.convert(state.blendFunc().dstAlpha()));
+            enableBlend();
+            setBlendFunc(GL.convert(state.blendFunc().srcRGB()), GL.convert(state.blendFunc().dstRGB()), GL.convert(state.blendFunc().srcAlpha()), GL.convert(state.blendFunc().dstAlpha()));
         }
 
         if (state.depthFunc() == null) {
             disableDepthTest();
         } else {
-            enableDepthTest(GL.convert(state.depthFunc()));
+            enableDepthTest();
+            setDepthFunc(GL.convert(state.depthFunc()));
         }
 
         if (state.cullFace() == null) {
             disableCull();
         } else {
-            enableCull(GL.convert(state.cullFace()));
+            enableCull();
+            setCullFace(GL.convert(state.cullFace()));
         }
 
         switch (state.writeMask()) {
@@ -190,23 +199,17 @@ public class GLState {
     // Sync
 
     public void syncWith(GLState other) {
-        if (other.blendEnabled) {
-            enableBlend(other.srcColor, other.dstColor, other.srcAlpha, other.dstAlpha);
-        } else {
-            disableBlend();
-        }
+        if (other.blendEnabled) enableBlend();
+        else disableBlend();
+        setBlendFunc(other.srcColor, other.dstColor, other.srcAlpha, other.dstAlpha);
 
-        if (other.depthTestEnabled) {
-            enableDepthTest(other.depthFunc);
-        } else {
-            disableDepthTest();
-        }
+        if (other.depthTestEnabled) enableDepthTest();
+        else disableDepthTest();
+        setDepthFunc(other.depthFunc);
 
-        if (other.cullEnabled) {
-            enableCull(other.cullFace);
-        } else {
-            disableCull();
-        }
+        if (other.cullEnabled) enableCull();
+        else disableCull();
+        setCullFace(other.cullFace);
 
         setColorMask(other.colorMaskR, other.colorMaskG, other.colorMaskB, other.colorMaskA);
         setDepthMask(other.depthMask);
