@@ -9,16 +9,22 @@ import org.meteordev.juno.api.image.Sampler;
 import org.meteordev.juno.api.pipeline.GraphicsPipeline;
 import org.meteordev.juno.opengl.GL;
 import org.meteordev.juno.opengl.GLResource;
+import org.meteordev.juno.opengl.GLState;
 
 import java.nio.ByteBuffer;
 
 public class GLRenderPass implements RenderPass {
     private final GLCommandList commands;
 
+    private final int width;
+    private final int height;
+
     private GraphicsPipeline pipeline;
 
-    GLRenderPass(GLCommandList commands) {
+    GLRenderPass(GLCommandList commands, int width, int height) {
         this.commands = commands;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -31,7 +37,11 @@ public class GLRenderPass implements RenderPass {
         this.pipeline = pipeline;
 
         commands.add(() -> {
-            commands.getDevice().getState().applyRenderState(pipeline.getState());
+            GLState state = commands.getDevice().getState();
+
+            state.applyRenderState(pipeline.getState());
+            state.disableScissor();
+
             GL33C.glUseProgram(((GLResource) pipeline).getHandle());
         });
 
@@ -55,6 +65,18 @@ public class GLRenderPass implements RenderPass {
         long size = data.remaining();
 
         commands.add(() -> GL33C.glBindBufferRange(GL33C.GL_UNIFORM_BUFFER, slot, commands.getDevice().getUniformBuffer(), offset, size));
+    }
+
+    @Override
+    public void setScissor(int x, int y, int width, int height) {
+        if (x == 0 && y == 0 && width == this.width && height == this.height) {
+            commands.add(() -> commands.getDevice().getState().disableScissor());
+        } else {
+            commands.add(() -> {
+                commands.getDevice().getState().enableScissor();
+                GL33C.glScissor(x, y, width, height);
+            });
+        }
     }
 
     @Override

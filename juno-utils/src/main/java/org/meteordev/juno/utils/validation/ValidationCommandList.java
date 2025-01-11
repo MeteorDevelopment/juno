@@ -17,6 +17,8 @@ public class ValidationCommandList implements CommandList {
 
     ValidationRenderPass pass;
 
+    private int groupCount;
+
     ValidationCommandList(ValidationDevice layer, CommandList commands) {
         this.layer = layer;
         this.commands = commands;
@@ -49,6 +51,26 @@ public class ValidationCommandList implements CommandList {
             throw new ValidationException("image is too small, src: " + src.remaining() + ", dst: " + dstSize);
 
         commands.uploadToImage(src, dst);
+    }
+
+    @Override
+    public void pushGroup(String name) {
+        if (name.isBlank())
+            throw new ValidationException("group name is empty");
+
+        groupCount++;
+
+        commands.pushGroup(name);
+    }
+
+    @Override
+    public void popGroup() {
+        if (groupCount == 0)
+            throw new ValidationException("no group pop");
+
+        groupCount--;
+
+        commands.popGroup();
     }
 
     @Override
@@ -109,6 +131,9 @@ public class ValidationCommandList implements CommandList {
     public void submit() {
         if (pass != null)
             throw new ValidationException("current render pass was not yet ended, all render passes need to end before submitting a command list");
+
+        if (groupCount != 0)
+            throw new ValidationException("all groups need to be popped before submitting a command list");
 
         commands.submit();
     }

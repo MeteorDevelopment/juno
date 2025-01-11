@@ -3,6 +3,7 @@ package org.meteordev.juno.opengl.commands;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL33C;
+import org.lwjgl.opengl.GL43C;
 import org.lwjgl.system.MemoryUtil;
 import org.meteordev.juno.api.Resource;
 import org.meteordev.juno.api.buffer.Buffer;
@@ -89,8 +90,24 @@ public class GLCommandList implements CommandList {
     }
 
     @Override
+    public void pushGroup(String name) {
+        if (GL.debugGroupAvailable) {
+            commands.add(() -> GL43C.glPushDebugGroup(GL43C.GL_DEBUG_SOURCE_APPLICATION, 0, name));
+        }
+    }
+
+    @Override
+    public void popGroup() {
+        if (GL.debugGroupAvailable) {
+            commands.add(GL43C::glPopDebugGroup);
+        }
+    }
+
+    @Override
     public RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color) {
         add(() -> {
+            device.getState().disableScissor();
+
             int framebuffer = device.getFramebufferManager().get(depth, color);
             GL33C.glBindFramebuffer(GL33C.GL_FRAMEBUFFER, framebuffer);
 
@@ -112,13 +129,22 @@ public class GLCommandList implements CommandList {
             }
         });
 
-        if (depth != null)
+        Attachment first = null;
+
+        if (depth != null) {
             addResource(depth.image());
 
-        for (Attachment attachment : color)
+            first = depth;
+        }
+
+        for (Attachment attachment : color) {
             addResource(attachment.image());
 
-        return new GLRenderPass(this);
+            if (first == null)
+                first = attachment;
+        }
+
+        return new GLRenderPass(this, first.image().getWidth(), first.image().getHeight());
     }
 
     @Override

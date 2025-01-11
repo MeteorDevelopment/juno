@@ -1,17 +1,32 @@
 package org.meteordev.juno.mc.backend;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.font.GlyphAtlasTexture;
 import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import org.lwjgl.opengl.GL33C;
 import org.meteordev.juno.api.image.Image;
 import org.meteordev.juno.api.image.ImageFormat;
+import org.meteordev.juno.mc.mixin.GlyphAtlasTextureAccessor;
 import org.meteordev.juno.opengl.GLResource;
 
 public class MCWrappedImage implements GLResource, Image {
     private final AbstractTexture texture;
+    private final ImageFormat format;
 
     public MCWrappedImage(AbstractTexture texture) {
         this.texture = texture;
+
+        this.format = switch (texture) {
+            case NativeImageBackedTexture nativeTexture -> switch (nativeTexture.getImage().getFormat()) {
+                case RGBA -> ImageFormat.RGBA;
+                case RGB -> ImageFormat.RGB;
+                case LUMINANCE_ALPHA -> ImageFormat.RG;
+                case LUMINANCE -> ImageFormat.R;
+            };
+            case GlyphAtlasTexture glyphTexture -> ((GlyphAtlasTextureAccessor) glyphTexture).getHasColor() ? ImageFormat.RGBA : ImageFormat.R;
+            default -> ImageFormat.RGBA;
+        };
     }
 
     @Override
@@ -33,8 +48,7 @@ public class MCWrappedImage implements GLResource, Image {
 
     @Override
     public ImageFormat getFormat() {
-        // TODO: Uhhhh
-        return ImageFormat.RGBA;
+        return format;
     }
 
     @Override

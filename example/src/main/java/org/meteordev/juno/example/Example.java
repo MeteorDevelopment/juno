@@ -66,8 +66,10 @@ public class Example {
         Device device = ValidationDevice.wrap(GLDevice.create());
 
         GL43C.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-            String msg = MemoryUtil.memASCII(message, length);
-            System.out.println(msg);
+            if (source != GL43C.GL_DEBUG_SOURCE_APPLICATION) {
+                String msg = MemoryUtil.memASCII(message, length);
+                System.out.println(msg);
+            }
         }, 0);
 
         GL43C.glEnable(GL43C.GL_DEBUG_OUTPUT);
@@ -104,6 +106,7 @@ public class Example {
             window.pollEvents();
 
             CommandList commands = device.createCommandList();
+            commands.pushGroup("Example");
 
             RenderPass pass = commands.beginRenderPass(
                     null,
@@ -111,12 +114,14 @@ public class Example {
             );
 
             pass.bindPipeline(pipeline);
-            pass.setUniforms(uniforms, 0);
             pass.bindImage(image, sampler, 0);
+            pass.setUniforms(uniforms, 0);
+            pass.setScissor(0, 0, 300, 300);
             mesh.draw(pass);
 
             pass.end();
 
+            commands.popGroup();
             commands.submit();
 
             window.swapBuffers();

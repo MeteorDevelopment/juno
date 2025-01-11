@@ -32,6 +32,10 @@ dependencies {
     implementation("org.meteordev:juno-utils:${property("juno_utils_version")}")
     implementation("org.meteordev:juno-opengl:${property("juno_opengl_version")}")
 
+    //implementation(project(":juno-api"))
+    //implementation(project(":juno-utils"))
+    //implementation(project(":juno-opengl"))
+
     implementation("org.joml:joml:${project.property("joml_version")}")
 
     implementation("de.javagl:jgltf-model:2.0.4")

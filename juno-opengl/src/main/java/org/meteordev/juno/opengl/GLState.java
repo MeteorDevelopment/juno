@@ -14,6 +14,8 @@ public class GLState {
     public boolean cullEnabled;
     public int cullFace;
 
+    public boolean scissorEnabled;
+
     public boolean colorMaskR, colorMaskG, colorMaskB, colorMaskA;
     public boolean depthMask;
 
@@ -86,6 +88,22 @@ public class GLState {
         if (cullFace != face) {
             GL33C.glCullFace(face);
             cullFace = face;
+        }
+    }
+
+    // Scissor
+
+    public void disableScissor() {
+        if (scissorEnabled) {
+            GL33C.glDisable(GL33C.GL_SCISSOR_TEST);
+            scissorEnabled = false;
+        }
+    }
+
+    public void enableScissor() {
+        if (!scissorEnabled) {
+            GL33C.glEnable(GL33C.GL_SCISSOR_TEST);
+            scissorEnabled = true;
         }
     }
 
@@ -167,6 +185,8 @@ public class GLState {
         cullEnabled = GL33C.glGetBoolean(GL33C.GL_CULL_FACE);
         cullFace = GL33C.glGetInteger(GL33C.GL_CULL_FACE_MODE);
 
+        scissorEnabled = GL33C.glGetBoolean(GL33C.GL_SCISSOR_TEST);
+
         colorMaskR = GL33C.glGetBooleani(GL33C.GL_COLOR_WRITEMASK, 0);
         colorMaskG = GL33C.glGetBooleani(GL33C.GL_COLOR_WRITEMASK, 1);
         colorMaskB = GL33C.glGetBooleani(GL33C.GL_COLOR_WRITEMASK, 2);
@@ -189,6 +209,8 @@ public class GLState {
         cullEnabled = other.cullEnabled;
         cullFace = other.cullFace;
 
+        scissorEnabled = other.scissorEnabled;
+
         colorMaskR = other.colorMaskR;
         colorMaskG = other.colorMaskG;
         colorMaskB = other.colorMaskB;
@@ -210,6 +232,9 @@ public class GLState {
         if (other.cullEnabled) enableCull();
         else disableCull();
         setCullFace(other.cullFace);
+
+        if (other.scissorEnabled) enableScissor();
+        else disableScissor();
 
         setColorMask(other.colorMaskR, other.colorMaskG, other.colorMaskB, other.colorMaskA);
         setDepthMask(other.depthMask);

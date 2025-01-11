@@ -5,6 +5,8 @@
   "client": [
     "CapabilityTrackerAccessor",
     "GameRendererMixin",
+    "GlDebugMixin",
+    "GlyphAtlasTextureAccessor",
     "MinecraftClientMixin",
     "WorldRendererMixin"
   ],

@@ -96,6 +96,23 @@ public class ValidationRenderPass implements RenderPass {
     }
 
     @Override
+    public void setScissor(int x, int y, int width, int height) {
+        if (x < 0)
+            throw new ValidationException("scissor x cannot be negative");
+
+        if (y < 0)
+            throw new ValidationException("scissor y cannot be negative");
+
+        if (width < 1)
+            throw new ValidationException("scissor width cannot be less than 1");
+
+        if (height < 1)
+            throw new ValidationException("scissor height cannot be less than 1");
+
+        pass.setScissor(x, y, width, height);
+    }
+
+    @Override
     public void draw(Buffer indexBuffer, Buffer vertexBuffer, int count) {
         if (ended)
             throw new ValidationException("render pass ended");

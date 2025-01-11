@@ -31,6 +31,10 @@ dependencies {
     jij("org.meteordev:juno-api:${property("juno_api_version")}")
     jij("org.meteordev:juno-utils:${property("juno_utils_version")}")
     jij("org.meteordev:juno-opengl:${property("juno_opengl_version")}")
+
+    //jij(project(":juno-api"))
+    //jij(project(":juno-utils"))
+    //jij(project(":juno-opengl"))
 }
 
 tasks.withType<JavaCompile> {

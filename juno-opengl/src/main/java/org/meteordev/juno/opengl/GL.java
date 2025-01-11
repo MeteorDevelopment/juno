@@ -15,6 +15,7 @@ import org.meteordev.juno.api.pipeline.vertexformat.VertexType;
 
 public class GL {
     public static boolean objectLabelAvailable = false;
+    public static boolean debugGroupAvailable = false;
 
     public static void setName(GLObjectType type, int handle, String name) {
         if (objectLabelAvailable && !name.isEmpty()) {
@@ -48,6 +49,7 @@ public class GL {
     public static int convertInternal(ImageFormat format) {
         return switch (format) {
             case R -> GL33C.GL_R8;
+            case RG -> GL33C.GL_RG8;
             case RGB -> GL33C.GL_RGB8;
             case RGBA -> GL33C.GL_RGBA8;
         };
@@ -56,6 +58,7 @@ public class GL {
     public static int convert(ImageFormat format) {
         return switch (format) {
             case R -> GL33C.GL_RED;
+            case RG -> GL33C.GL_RG;
             case RGB -> GL33C.GL_RGB;
             case RGBA -> GL33C.GL_RGBA;
         };
@@ -63,7 +66,7 @@ public class GL {
 
     public static int convertType(ImageFormat format) {
         return switch (format) {
-            case R, RGB, RGBA -> GL33C.GL_UNSIGNED_BYTE;
+            case R, RG, RGB, RGBA -> GL33C.GL_UNSIGNED_BYTE;
         };
     }
 

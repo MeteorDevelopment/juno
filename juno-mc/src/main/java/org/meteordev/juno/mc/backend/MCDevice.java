@@ -18,6 +18,7 @@ public class MCDevice extends GLDevice {
     private final GlStateManager.BlendFuncState mcBlendState;
     private final GlStateManager.DepthTestState mcDepthState;
     private final GlStateManager.CullFaceState mcCullState;
+    private final GlStateManager.ScissorTestState mcScissorState;
     private final GlStateManager.ColorMask mcColorMask;
 
     private final GlStateManager.Texture2DState[] mcTextureState;
@@ -31,6 +32,7 @@ public class MCDevice extends GLDevice {
         this.mcBlendState = getGlStateManagerField(GlStateManager.BlendFuncState.class);
         this.mcDepthState = getGlStateManagerField(GlStateManager.DepthTestState.class);
         this.mcCullState = getGlStateManagerField(GlStateManager.CullFaceState.class);
+        this.mcScissorState = getGlStateManagerField(GlStateManager.ScissorTestState.class);
         this.mcColorMask = getGlStateManagerField(GlStateManager.ColorMask.class);
 
         this.mcTextureState = getGlStateManagerField(GlStateManager.Texture2DState[].class);
@@ -54,6 +56,8 @@ public class MCDevice extends GLDevice {
 
         mcState.cullEnabled = ((CapabilityTrackerAccessor) mcCullState.capState).getState();
         mcState.cullFace = mcCullState.mode;
+
+        mcState.scissorEnabled = ((CapabilityTrackerAccessor) mcScissorState.capState).getState();
 
         mcState.colorMaskR = mcColorMask.red;
         mcState.colorMaskG = mcColorMask.green;

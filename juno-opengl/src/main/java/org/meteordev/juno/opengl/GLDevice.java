@@ -1,6 +1,7 @@
 package org.meteordev.juno.opengl;
 
 import org.lwjgl.opengl.GL33C;
+import org.lwjgl.opengl.GLCapabilities;
 import org.meteordev.juno.api.BackendInfo;
 import org.meteordev.juno.api.Device;
 import org.meteordev.juno.api.buffer.Buffer;
@@ -46,7 +47,10 @@ public class GLDevice implements Device {
         this.state = new GLState();
         this.bindings = new GLBindings();
 
-        GL.objectLabelAvailable = org.lwjgl.opengl.GL.getCapabilities().glObjectLabel != 0;
+        GLCapabilities caps = org.lwjgl.opengl.GL.getCapabilities();
+        GL.objectLabelAvailable = caps.glObjectLabel != 0;
+        GL.debugGroupAvailable = caps.glPushDebugGroup != 0 && caps.glPopDebugGroup != 0;
+
         state.load();
 
         this.vaoManager = new VaoManager();

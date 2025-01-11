@@ -38,6 +38,16 @@ public class MCCommandList implements CommandList {
     }
 
     @Override
+    public void pushGroup(String name) {
+        commands.pushGroup(name);
+    }
+
+    @Override
+    public void popGroup() {
+        commands.popGroup();
+    }
+
+    @Override
     public RenderPass beginRenderPass(@Nullable Attachment depth, Attachment... color) {
         return commands.beginRenderPass(depth, color);
     }
