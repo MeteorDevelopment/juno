@@ -32,6 +32,20 @@ public interface CommandList {
      */
     void uploadToImage(ByteBuffer src, Image dst);
 
+    // Debug
+
+    /**
+     * Begins a new group of commands.
+     * Groups do not change any behaviour, but they can be seen in debugging tools such as RenderDoc.
+     * @param name the name of the group to display.
+     */
+    void pushGroup(String name);
+
+    /**
+     * Stops the current group of commands.
+     */
+    void popGroup();
+
     // Render passes
 
     /**
