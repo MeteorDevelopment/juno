@@ -18,7 +18,7 @@ public interface RenderPass {
 
     /**
      * Binds a pipeline for subsequent commands.
-     * This command clears all currently bound images and set uniform data.
+     * This command clears all currently bound images, set uniform data and scissor window.
      * @param pipeline the pipeline to bind.
      */
     void bindPipeline(GraphicsPipeline pipeline);
@@ -37,6 +37,16 @@ public interface RenderPass {
      * @param slot the slot to use, available slots are 0 - 4.
      */
     void setUniforms(ByteBuffer data, int slot);
+
+    /**
+     * Sets the current scissor region to the specified coordinates. All pixels outside this region won't be rendered.
+     * To disable scissor you have to set it to the same size as the image you are rendering into.
+     * @param x the x coordinate starting in the lower-left corner.
+     * @param y the y coordinate starting in the lower-left corner.
+     * @param width the width of the region.
+     * @param height the height of the region.
+     */
+    void setScissor(int x, int y, int width, int height);
 
     /**
      * Submits a draw call. Needs a pipeline to be bound and any resources it needs (images and uniforms).
